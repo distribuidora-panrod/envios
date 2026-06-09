@@ -225,14 +225,14 @@ input:focus,textarea:focus,select:focus{
             <div class="form-group">
                 <label>Tipo de Envío</label>
                 <select id="tipoEnvio">
-                    <option value="Normal">Normal (72 hs)</option>
-                    <option value="Express">Express (24 hs)</option>
+                    <option value="Normal">Envío Normal (72 horas)</option>
+                    <option value="Express">Envío Express (24 horas)</option>
                 </select>
             </div>
         </div>
 
         <div class="form-group">
-            <label>Dirección de Destino</label>
+            <label>Dirección de Destino (N°,TIMBRE, PISO, DEPTO)</label>
             <textarea id="direccion"></textarea>
         </div>
 
@@ -245,7 +245,7 @@ input:focus,textarea:focus,select:focus{
         </div>
 
         <div class="form-group">
-            <label>Aclaraciones sobre el Domicilio</label></label>
+            <label>Aclaraciones sobre su envío</label></label>
             <textarea id="observaciones"></textarea>
         </div>
 
@@ -254,16 +254,16 @@ input:focus,textarea:focus,select:focus{
         </button>
 
         <div class="preview" id="preview">
-            <h2>Resumen</h2>
+            <h2>Resumen del Formulario</h2>
             <div id="previewContenido"></div>
 
             <div class="status-box">
                 ⏳ Esta solicitud será evaluada para el etiqueado
-t            </div>
+            </div>
 
             <div class="buttons-preview">
                 <button class="btn btn-primary" onclick="editarFormulario()">Editar</button>
-                <button class="btn btn-success" onclick="enviarWhatsApp()">Enviar</button>
+                <button class="btn btn-success" onclick="enviarWhatsApp()">Confirmar</button>
             </div>
         </div>
 
@@ -277,10 +277,10 @@ let costoActual = {
 };
 
 function generarCodigoSeguimiento() {
-    const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const letras = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
     const numeros = "0123456789";
 
-    let codigo = "PAN-";
+    let codigo = "PR-";
 
     for (let i = 0; i < 3; i++) {
         codigo += letras.charAt(Math.floor(Math.random() * letras.length));
@@ -311,7 +311,7 @@ function generarVistaPrevia(){
     const observaciones = document.getElementById("observaciones").value;
 
     document.getElementById("previewContenido").innerHTML = `
-    <div><span style="color:#94a3b8;">💰 Costo:</span> 
+    <div><span style="color:#94a3b8;">💰 Precio de Envío Elegido:</span> 
     <strong>
     $${(document.getElementById("tipoEnvio").value === "Express" ? costoActual.express : costoActual.normal).toLocaleString("es-AR")}
     </strong></div>
@@ -330,13 +330,13 @@ function generarVistaPrevia(){
             <div><span style="color:#94a3b8;">📧 Email:</span> <strong>${email}</strong></div>
 
             <div><span style="color:#94a3b8;">📍 Provincia:</span> <strong>${provincia}</strong></div>
-            <div><span style="color:#94a3b8;">🏙 Ciudad:</span> <strong>${ciudad}</strong></div>
-            <div><span style="color:#94a3b8;">📮 CP:</span> <strong>${cp}</strong></div>
+            <div><span style="color:#94a3b8;">🏙 Ciudad de Destino:</span> <strong>${ciudad}</strong></div>
+            <div><span style="color:#94a3b8;">📮 Codigo Postal:</span> <strong>${cp}</strong></div>
 
-            <div><span style="color:#94a3b8;">🏠 Dirección:</span> <strong>${direccion}</strong></div>
+            <div><span style="color:#94a3b8;">🏠 Dirección de Destino:</span> <strong>${direccion}</strong></div>
 
-            <div><span style="color:#94a3b8;">🚚 Envío:</span> <strong>${tipoEnvio}</strong></div>
-            <div><span style="color:#94a3b8;">💳 Pago:</span> <strong>${metodoPago}</strong></div>
+            <div><span style="color:#94a3b8;">🚚 Tiponde Envío:</span> <strong>${tipoEnvio}</strong></div>
+            <div><span style="color:#94a3b8;">💳 Forma de Pago:</span> <strong>${metodoPago}</strong></div>
 
             <div><span style="color:#94a3b8;">📝 Observaciones:</span> <strong>${observaciones || "Sin observaciones"}</strong></div>
         </div>
@@ -355,7 +355,7 @@ function enviarWhatsApp(){
     const modalidad = document.getElementById("tipoEnvio").value;
     const precioFinal = modalidad === "Express" ? costoActual.express : costoActual.normal;
 
-    const mensaje = `📦 *NUEVA SOLICITUD LOGÍSTICA - PANROD*
+    const mensaje = `📦 *NUEVA SOLICITUD DE ENVIO LOGÍSTICA*
 
 ━━━━━━━━━━━━━━━━━━
 🔎 *Código de seguimiento:*
@@ -387,9 +387,9 @@ ${document.getElementById("observaciones").value || "Sin observaciones"}
 
 ━━━━━━━━━━━━━━━━━━
 📌 Solicito validación y despacho correspondiente.
-Sistema PANROD - Logística Automatizada`;
+Sistema PANROD - Logística`;
 
-    window.open("https://wa.me/541136514766?text=" + encodeURIComponent(mensaje), "_blank");
+    window.open("https://wa.me/542213109897?text=" + encodeURIComponent(mensaje), "_blank");
 }
 
 /* ===== COSTOS ===== */
@@ -415,7 +415,7 @@ function obtenerCostoProvincia(provincia){
     switch(provincia){
         case "Buenos Aires":
         case "CABA":
-            return {normal:9500,express:15000};
+            return {normal:9500,express:18000};
         case "Santa Fe":
         case "Córdoba":
         case "Entre Ríos":
