@@ -211,7 +211,7 @@ input:focus,textarea:focus,select:focus{
             </div>
 
             <div class="form-group">
-                <label>Ciudad</label>
+                <label>Ciudad de Destino</label>
                 <input type="text" id="ciudad">
             </div>
         </div>
@@ -225,27 +225,27 @@ input:focus,textarea:focus,select:focus{
             <div class="form-group">
                 <label>Tipo de Envío</label>
                 <select id="tipoEnvio">
-                    <option value="Normal">Normal</option>
-                    <option value="Express">Express</option>
+                    <option value="Normal">Normal (72 hs)</option>
+                    <option value="Express">Express (24 hs)</option>
                 </select>
             </div>
         </div>
 
         <div class="form-group">
-            <label>Dirección</label>
+            <label>Dirección de Destino</label>
             <textarea id="direccion"></textarea>
         </div>
 
         <div class="form-group">
             <label>Método de Pago</label>
             <select id="metodoPago">
-                <option>Transferencia</option>
-                <option>Pago Fácil</option>
+                <option>Transferencia Bancaria</option>
+                <option>Depósito Pago Fácil</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label>Observaciones</label>
+            <label>Aclaraciones sobre el Domicilio</label></label>
             <textarea id="observaciones"></textarea>
         </div>
 
@@ -258,8 +258,8 @@ input:focus,textarea:focus,select:focus{
             <div id="previewContenido"></div>
 
             <div class="status-box">
-                ⏳ Pendiente de validación
-            </div>
+                ⏳ Esta solicitud será evaluada para el etiqueado
+t            </div>
 
             <div class="buttons-preview">
                 <button class="btn btn-primary" onclick="editarFormulario()">Editar</button>
