@@ -1057,7 +1057,7 @@ function buscarEnvio(){
         let progreso = envio.pasoActual;
 
         let stepsConfig = [
-            { num: 1, titulo: "Producto depositado por el vendedor en casa central", fecha: envio.fechasLog.creada },
+            { num: 1, titulo: "Producto depositado por el vendedor en Depósito Central", fecha: envio.fechasLog.creada },
             { num: 2, titulo: "Pago total verificado y acreditado en sistema", fecha: envio.fechasLog.pago || "Pendiente" },
             { num: 3, titulo: "Paquete verificado y empaquetado con datos de entrega del cliente", fecha: envio.fechasLog.verificado || "Pendiente" },
             { num: 4, titulo: `En viaje hacia centro de distribución regional de ${envio.destino}`, fecha: envio.fechasLog.viaje || "Pendiente" },
