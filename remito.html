@@ -21,6 +21,7 @@
             margin: 0; padding: 0;
             color: #2d3748; background-color: #ffffff;
             font-size: 10pt; line-height: 1.4;
+            padding-bottom: 80px; /* Espacio para que el panel inferior no tape el pie de página */
         }
 
         /* Contenedor principal que se exportará */
@@ -141,33 +142,25 @@
             outline: 2px solid #22c55e;
         }
 
-        /* Panel de Control de Botones Flotantes (Excluidos en Impresión) */
+        /* CAMBIO AQUÍ: Panel de Control Flotante Abajo a la Derecha */
         .action-panel {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 12px;
             border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.2);
             z-index: 10000;
-            border: 1px solid #e2e8f0;
+            border: 1px solid #cbd5e0;
             font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        .action-panel-title {
-            font-size: 8.5pt;
-            font-weight: bold;
-            color: #4a5568;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
         .btn {
-            display: block;
-            width: 160px;
-            padding: 10px 14px;
-            margin: 6px 0;
+            display: inline-block;
+            padding: 10px 16px;
             border: none;
             border-radius: 4px;
             font-weight: bold;
@@ -175,23 +168,37 @@
             cursor: pointer;
             transition: all 0.2s ease;
             text-align: center;
-            text-decoration: none;
         }
-        .btn-pdf {
-            background-color: #dc2626;
-            color: white;
-        }
+        .btn-pdf { background-color: #dc2626; color: white; }
         .btn-pdf:hover { background-color: #b91c1c; }
         
-        .btn-img {
-            background-color: #2563eb;
-            color: white;
-        }
+        .btn-img { background-color: #2563eb; color: white; }
         .btn-img:hover { background-color: #1d4ed8; }
 
-        /* Ocultar elementos de interfaz al imprimir por el sistema del sistema operativo o WeasyPrint */
+        .btn-hide { background-color: #718096; color: white; padding: 10px 10px; }
+        .btn-hide:hover { background-color: #4a5568; }
+
+        /* Botón discreto para volver a mostrar el panel si se ocultó */
+        .show-panel-trigger {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: #1a202c;
+            color: white;
+            padding: 5px 10px;
+            font-size: 7.5pt;
+            border-radius: 4px;
+            cursor: pointer;
+            display: none;
+            z-index: 9999;
+            font-weight: bold;
+            opacity: 0.7;
+        }
+        .show-panel-trigger:hover { opacity: 1; }
+
+        /* Ocultar elementos de interfaz en la impresión del sistema operativo */
         @media print {
-            .action-panel { display: none !important; }
+            .action-panel, .show-panel-trigger { display: none !important; }
             [contenteditable="true"]:hover, [contenteditable="true"]:focus {
                 background-color: transparent !important;
                 outline: none !important;
@@ -202,16 +209,20 @@
 <body>
 
     <div class="action-panel" id="actionPanel">
-        <div class="action-panel-title">Panel de Controles</div>
         <button class="btn btn-pdf" onclick="exportarPDF()">Descargar PDF</button>
         <button class="btn btn-img" onclick="exportarImagen()">Descargar Imagen</button>
+        <button class="btn btn-hide" title="Ocultar controles temporariamente" onclick="alternarPanel(false)">✕</button>
+    </div>
+
+    <div class="show-panel-trigger" id="showTrigger" onclick="alternarPanel(true)">
+        Mostrar Controles
     </div>
 
     <div class="printable-content" id="remitoContainer">
         
         <div class="invoice-box">
             <div class="letter-badge">
-                <span class="letter">A</span>
+                <span class="letter">R</span>
                 <span class="sub-letter">REMITO</span>
             </div>
             
@@ -321,50 +332,66 @@
     </div>
 
     <script>
+        // Función para ocultar o mostrar manualmente los controles
+        function alternarPanel(visible) {
+            const panel = document.getElementById('actionPanel');
+            const trigger = document.getElementById('showTrigger');
+            if (visible) {
+                panel.style.display = 'flex';
+                trigger.style.display = 'none';
+            } else {
+                panel.style.display = 'none';
+                trigger.style.display = 'block';
+            }
+        }
+
         // 1. Exportar a PDF usando el motor de impresión nativo del sistema
         function exportarPDF() {
-            // Quitamos el foco activo por seguridad antes de imprimir
-            if (document.activeElement) {
-                document.activeElement.blur();
-            }
-            // Disparar diálogo de guardado PDF / Impresión nativa
+            if (document.activeElement) { document.activeElement.blur(); }
             window.print();
         }
 
         // 2. Exportar a Imagen PNG procesando el contenedor de la factura
         function exportarImagen() {
             const panel = document.getElementById('actionPanel');
+            const trigger = document.getElementById('showTrigger');
             const target = document.getElementById('remitoContainer');
             
-            // Ocultamos temporalmente el panel por si acaso y los estilos de edición
+            // Guardamos el estado actual de visualización del panel
+            const panelOriginalDisplay = panel.style.display;
+            const triggerOriginalDisplay = trigger.style.display;
+
+            // Ocultamos todo control visual antes del renderizado matemático
             panel.style.display = 'none';
+            trigger.style.display = 'none';
 
             // Obtener el número de documento dinámico para nombrar el archivo
             const nroDocElement = target.querySelector('span[style*="font-size: 11pt"]');
             const nroDoc = nroDocElement ? nroDocElement.innerText.trim() : 'remito';
 
-            // Ejecutar renderizado a canvas de alta resolución (escala x2 para mayor nitidez)
             html2canvas(target, {
                 scale: 2,
                 useCORS: true,
                 backgroundColor: '#ffffff'
             }).then(canvas => {
-                // Volver a mostrar el panel de control
-                panel.style.display = 'block';
+                // Restauramos los paneles a su estado previo
+                panel.style.display = panelOriginalDisplay;
+                trigger.style.display = triggerOriginalDisplay;
 
-                // Crear enlace invisible para descargar la imagen generada
+                // Descarga automática
                 const link = document.createElement('a');
                 link.download = `Remito_${nroDoc}.png`;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             }).catch(error => {
                 console.error("Error generando la imagen:", error);
-                panel.style.display = 'block';
+                panel.style.display = panelOriginalDisplay;
+                trigger.style.display = triggerOriginalDisplay;
                 alert("Hubo un error al procesar el documento como imagen.");
             });
         }
     </script>
 
 </body>
-                </html>
-                                                                                     
+    </html>
+    
