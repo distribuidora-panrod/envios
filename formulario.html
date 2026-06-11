@@ -9,8 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* ====== ESTILOS ORIGINALES MANTENIDOS Y OPTIMIZADOS ====== */
-
+/* ====== ESTILOS ====== */
 *{margin:0;padding:0;box-sizing:border-box;}
 
 body{
@@ -72,7 +71,7 @@ input:focus,textarea:focus,select:focus{
     outline:none;border-color:#38bdf8;
 }
 
-/* Campos de lectura bloqueados */
+/* Campos bloqueados */
 input[readonly] {
     background:#1e293b !important;
     border-color:#334155;
@@ -108,7 +107,6 @@ input[readonly] {
 .btn-success{background:#059669;color:#fff;}
 .btn-success:hover{background:#047857;}
 
-/* Estilos de la caja de búsqueda inicial */
 .search-box {
     text-align: center;
     padding: 20px 0;
@@ -209,15 +207,15 @@ input[readonly] {
 <div class="container">
     <div class="card">
 
-        <!-- FASE 1: BUSCADOR DE GUÍA SATELITAL -->
+        <!-- FASE 1: BUSCADOR DE GUÍA -->
         <div id="wrapper-busqueda" class="search-box">
             <h2 class="section-title">🔍 Consulta de Carga Recibida</h2>
-            <p style="color: #94a3b8; font-size: 14px;">Ingrese el Código de Seguimiento provisto por su distribuidor para validar su bulto en los depósitos de acopio.</p>
-            <input type="text" id="input-busqueda" class="codigo" placeholder="Ej: PR-MND-2026" maxlength="12">
+            <p style="color: #94a3b8; font-size: 14px;">Ingrese el Código de Seguimiento para validar su bulto en el centro logístico.</p>
+            <input type="text" id="input-busqueda" class="codigo" placeholder="PR-BDG-40526" maxlength="15">
             <button class="btn btn-primary" onclick="validarCodigoSistema()">🔓 Acceder a Verificación de Ruta</button>
         </div>
 
-        <!-- FASE 2: FORMULARIO GENERAL (OCULTO INICIALMENTE) -->
+        <!-- FASE 2: FORMULARIO PRINCIPAL (OCULTO INICIALMENTE) -->
         <div id="wrapper-formulario" style="display: none;">
             
             <h2 class="section-title">📦 Datos de Envío y Destino</h2>
@@ -230,7 +228,7 @@ input[readonly] {
             <!-- Datos Automatizados Bloqueados -->
             <div class="row">
                 <div class="form-group">
-                    <label>Nombre y Apellido del Destinatario (Asociado a Guía)</label>
+                    <label>Nombre y Apellido del Destinatario</label>
                     <input type="text" id="nombre" readonly>
                 </div>
 
@@ -319,7 +317,7 @@ input[readonly] {
 
                 <div class="form-group">
                     <label>Tipo de Entrega Recomendada</label>
-                    <select id="tipoEnvio">
+                    <select id="tipoEnvio" onchange="actualizarCosto()">
                         <option value="Normal">Envío Normal (72 horas hábiles)</option>
                         <option value="Express">Envío Express Prioritario (24 horas)</option>
                     </select>
@@ -362,7 +360,7 @@ input[readonly] {
                 <div id="previewContenido"></div>
 
                 <div class="status-box">
-                    🚀 <strong>Tu lote comercial de figuritas está verificado en zona de embalaje.</strong> Al confirmar mediante el envío de este formulario, el sistema derivará su hoja de ruta al área de facturación para coordinar la acreditación de tasas logísticas e inicio de tracking en tiempo real.
+                    🚀 <strong>Tu lote comercial de figuritas está verificado en zona de embalaje.</strong> Al confirmar mediante el envío de este formulario, el sistema derivará su hoja de ruta al área de distribución para coordinar la acreditación de tasas logísticas e inicio de tracking.
                 </div>
 
                 <div class="buttons-preview">
@@ -373,7 +371,7 @@ input[readonly] {
 
         </div>
 
-        <!-- SECCIÓN COMPLEMENTARIA DE SEGURIDAD (Clave para generar confianza) -->
+        <!-- SECCIÓN COMPLEMENTARIA DE SEGURIDAD -->
         <div class="trust-badges">
             <div class="badge-item">
                 <strong>🔒 Datos Encriptados</strong>
@@ -400,60 +398,49 @@ let costoActual = {
 
 /* =========================================================================
    🚨 BASE DE DATOS INTERNA DE CLIENTES 
-   Acá registrás las guías nuevas que crees para tus compradores de WhatsApp.
    ========================================================================= */
 const baseDeDatosOrdenes = {
-    "PR-MND-2026": { // Código de ejemplo para pruebas
-        nombre: "Jose Luis Mamani",
-        dni: "46873523",
-        producto: "COMBO ORO - Pack Mayorista Junior (100 Sobres)",
-        precioMercaderia: "$155.000"
-    },
     "PR-BDG-40526": {
         nombre: "Jose Luis Mamani",
         dni: "46873523",
         producto: "COMBO ORO - Pack Mayorista Junior (100 Sobres)",
         precioMercaderia: "$155.000"
+    },
+    "PR-MND-2026": {
+        nombre: "Juan Carlos Pérez",
+        dni: "35987456",
+        producto: "COMBO BRONCE - Compra Mínima (25 Sobres)",
+        precioMercaderia: "$47.500"
     }
-    // Para agregar más clientes en el futuro seguís la misma estructura abajo
 };
 
-/* ===== FUNCIÓN VALIDAR CÓDIGO INICIAL (CORREGIDA Y FLEXIBLE) ===== */
+/* ===== FUNCIÓN VALIDAR CÓDIGO INICIAL ===== */
 function validarCodigoSistema() {
-    // 1. Capturamos lo que puso el usuario
     let codigoIngresado = document.getElementById("input-busqueda").value;
     
-    // 2. Control de seguridad: si está vacío, avisar al usuario
     if (!codigoIngresado || codigoIngresado.trim() === "") {
-        alert("⚠️ Por favor, ingrese un código de seguimiento para realizar la consulta.");
+        alert("⚠️ Por favor, ingrese un código de seguimiento.");
         return;
     }
 
-    // 3. Normalización: Quitamos espacios extra y pasamos todo a MAYÚSCULAS
     codigoIngresado = codigoIngresado.trim().toUpperCase();
-
-    // 4. Buscamos en nuestra base de datos interna
     const ordenEncontrada = baseDeDatosOrdenes[codigoIngresado];
 
     if (ordenEncontrada) {
-        // Rellenar campos bloqueados de lectura automática
         document.getElementById("codigo").value = codigoIngresado;
         document.getElementById("nombre").value = ordenEncontrada.nombre;
         document.getElementById("dni").value = ordenEncontrada.dni;
         document.getElementById("producto_lote").value = ordenEncontrada.producto;
         document.getElementById("valor_lote").value = ordenEncontrada.precioMercaderia;
 
-        // Swapping de interfaces (Ocultar buscador, mostrar formulario cargado)
         document.getElementById("wrapper-busqueda").style.display = "none";
         document.getElementById("wrapper-formulario").style.display = "block";
     } else {
-        // Alerta visual clara si el código no coincide exactamente con la base de datos
-        alert("❌ Error de Servidor: El código '" + codigoIngresado + "' no se encuentra registrado en el centro de acopio.\n\nVerifique que coincida exactamente con el código provisto (ej: PR-BDG-40526).");
+        alert("❌ Error: Código '" + codigoIngresado + "' no registrado en el sistema logístico.\n\nPruebe con: PR-BDG-40526");
     }
 }
 
-
-/* ===== GENERAR VISTA PREVIA RESUMEN ===== */
+/* ===== GENERAR VISTA PREVIA ===== */
 function generarVistaPrevia(){
     const codigo = document.getElementById("codigo").value;
     const nombre = document.getElementById("nombre").value;
@@ -471,7 +458,6 @@ function generarVistaPrevia(){
     const metodoPago = document.getElementById("metodoPago").value;
     const observaciones = document.getElementById("observaciones").value;
 
-    // Validación básica de campos obligatorios agregados por usuario
     if(!telefono || !provincia || !ciudad || !cp || !direccion) {
         alert("⚠️ Por favor complete todos los datos obligatorios de localización y contacto.");
         return;
@@ -481,25 +467,21 @@ function generarVistaPrevia(){
 
     document.getElementById("previewContenido").innerHTML = `
     <div style="background:#0b1220; padding:15px; border-radius:12px; border:1px solid #334155; margin-top:10px;">
-
         <div style="font-size:15px; color:#38bdf8; font-weight:800; margin-bottom:10px; text-align:center; background:#0f172a; padding:8px; border-radius:6px; border:1px dashed #38bdf8;">
             🛰️ Orden de Distribución Verificada: ${codigo}
         </div>
-
         <div style="display:grid; gap:8px; font-size:14px; margin-top:12px;">
             <div><span style="color:#94a3b8;">📦 Detalle de Carga:</span> <strong style="color:#f59e0b;">${producto}</strong></div>
-            <div><span style="color:#94a3b8;">💰 Costo de Mercadería Lote:</span> <strong style="color:#fff;">${valorMercaderia}</strong></div>
+            <div><span style="color:#94a3b8;">💰 Costo de Mercadería:</span> <strong>${valorMercaderia}</strong></div>
             <div style="border-bottom:1px solid #1f2937; padding-bottom:5px;"><span style="color:#cbd5e1;">🚚 Tasa Logística Obligatoria:</span> <strong style="color:#22c55e;">$${tasaLogistica.toLocaleString("es-AR")}</strong></div>
-            
             <div style="margin-top:5px;"><span style="color:#94a3b8;">👤 Receptor Declarado:</span> <strong>${nombre}</strong></div>
-            <div><span style="color:#94a3b8;">🪪 DNI Registrado:</span> <strong>${dni}</strong></div>
-            <div><span style="color:#94a3b8;">📞 Teléfono de Contacto:</span> <strong>${telefono}</strong></div>
-            <div><span style="color:#94a3b8;">📧 Correo Notificaciones:</span> <strong>${email || "No especificado"}</strong></div>
-            <div><span style="color:#94a3b8;">📍 Destino Validado:</span> <strong>${provincia}, ${ciudad} (CP: ${cp})</strong></div>
+            <div><span style="color:#94a3b8;">🪪 DNI:</span> <strong>${dni}</strong></div>
+            <div><span style="color:#94a3b8;">📞 Teléfono:</span> <strong>${telefono}</strong></div>
+            <div><span style="color:#94a3b8;">📍 Destino:</span> <strong>${provincia}, ${ciudad} (CP: ${cp})</strong></div>
             <div><span style="color:#94a3b8;">🏠 Dirección Postal:</span> <strong>${direccion}</strong></div>
-            <div><span style="color:#94a3b8;">⚙️ Modalidad de Viaje:</span> <strong>${tipoEnvio === "Express" ? "Express Prioritario (24hs)" : "Normal Estándar (72hs)"}</strong></div>
-            <div><span style="color:#94a3b8;">💳 Pasarela Arbitrada:</span> <strong>${metodoPago}</strong></div>
-            <div><span style="color:#94a3b8;">📝 Notas Adicionales:</span> <strong>${observaciones || "Ninguna."}</strong></div>
+            <div><span style="color:#94a3b8;">⚙️ Modalidad:</span> <strong>${tipoEnvio === "Express" ? "Express Prioritario (24hs)" : "Normal Estándar (72hs)"}</strong></div>
+            <div><span style="color:#94a3b8;">💳 Pasarela:</span> <strong>${metodoPago}</strong></div>
+            <div><span style="color:#94a3b8;">📝 Notas:</span> <strong>${observaciones || "Ninguna."}</strong></div>
         </div>
     </div>`;
 
@@ -507,12 +489,11 @@ function generarVistaPrevia(){
     document.getElementById("preview").scrollIntoView({ behavior: 'smooth' });
 }
 
-/* ===== EDITAR ===== */
 function editarFormulario(){
     document.getElementById("preview").style.display="none";
 }
 
-/* ===== WHATSAPP CON DATOS TOTALES ===== */
+/* ===== WHATSAPP ===== */
 function enviarWhatsApp(){
     const modalidad = document.getElementById("tipoEnvio").value;
     const tasaLogistica = modalidad === "Express" ? costoActual.express : costoActual.normal;
@@ -522,4 +503,18 @@ function enviarWhatsApp(){
 ━━━━━━━━━━━━━━━━━━
 🛰️ *Guía de Seguimiento:* ${document.getElementById("codigo").value}
 📦 *Lote Asignado:* ${document.getElementById("producto_lote").value}
-                        
+💳 *Costo Comercial:* ${document.getElementById("valor_lote").value}
+
+👤 *Datos de Verificación de Identidad*
+• Destinatario: ${document.getElementById("nombre").value}
+• DNI Registro: ${document.getElementById("dni").value}
+• Contacto: ${document.getElementById("telefono").value}
+
+📍 *Hoja de Ruta Confirmada por Cliente*
+• Provincia: ${document.getElementById("provincia").value}
+• Localidad/Barrio: ${document.getElementById("ciudad").value}
+• Código Postal: ${document.getElementById("cp").value}
+• Dirección Postal: ${document.getElementById("direccion").value}
+
+🚚 *Plan de Distribución*
+• Tipo de Tránsito: ${modalidad === "Express" ? "Express Prioritario (24hs)" : "Normal Estándar (72hs
