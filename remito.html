@@ -7,148 +7,250 @@
         @page {
             size: A4;
             margin: 15mm 12mm;
-            background-color: #ffffff;
             @bottom-right {
                 content: "Página " counter(page) " de " counter(pages);
-                font-family: Arial, sans-serif;
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
                 font-size: 8pt;
                 color: #718096;
             }
         }
         *, *::before, *::after { box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
             margin: 0; padding: 0;
             color: #2d3748; background-color: #ffffff;
             font-size: 10pt; line-height: 1.4;
         }
-        .header-container {
-            border: 2px solid #1a202c; padding: 15px;
-            margin-bottom: 20px; position: relative;
-        }
-        .company-section { width: 45%; display: inline-block; vertical-align: top; }
-        .company-title { font-size: 16pt; font-weight: bold; color: #1a202c; margin: 0; }
-        .company-subtitle { font-size: 8pt; text-transform: uppercase; color: #4a5568; font-weight: bold; }
-        .company-details { font-size: 9pt; color: #4a5568; line-height: 1.3; }
-        .document-type-badge {
-            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            border: 2px solid #1a202c; border-top: none;
-            width: 40px; height: 40px; text-align: center; background: #fff;
-        }
-        .document-type-badge span { font-size: 20pt; font-weight: bold; line-height: 38px; }
-        .document-type-text {
-            position: absolute; top: 45px; left: 50%; transform: translateX(-50%);
-            font-size: 7pt; font-weight: bold; color: #4a5568; text-align: center; width: 120px;
-        }
-        .document-section { width: 45%; display: inline-block; vertical-align: top; text-align: right; float: right; }
-        .document-title { font-size: 18pt; font-weight: bold; letter-spacing: 1px; margin: 0; }
         
-        .tracking-banner { background-color: #1a202c; color: #ffffff; padding: 10px 15px; margin-bottom: 20px; border-radius: 4px; }
+        /* Estructura Tipo Factura A */
+        .invoice-box {
+            border: 1px solid #1a202c;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        /* La famosa "R" de Remito en el centro, emulando la "A" de factura */
+        .letter-badge {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 1px solid #1a202c;
+            border-right: 1px solid #1a202c;
+            border-bottom: 1px solid #1a202c;
+            width: 45px;
+            height: 45px;
+            text-align: center;
+            background: #ffffff;
+            z-index: 10;
+        }
+        .letter-badge .letter {
+            font-size: 22pt;
+            font-weight: 800;
+            line-height: 42px;
+            display: block;
+        }
+        .letter-badge .sub-letter {
+            font-size: 6pt;
+            display: block;
+            margin-top: -5px;
+            color: #4a5568;
+        }
+
+        .header-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .header-table td {
+            width: 50%;
+            padding: 20px;
+            vertical-align: top;
+        }
+        .left-header {
+            border-right: 1px solid #1a202c;
+        }
+        
+        .company-title { font-size: 16pt; font-weight: 800; color: #1a202c; margin: 0 0 5px 0; letter-spacing: -0.5px; }
+        .company-subtitle { font-size: 9pt; text-transform: uppercase; color: #4a5568; font-weight: bold; margin-bottom: 10px; }
+        .company-details { font-size: 9pt; color: #4a5568; line-height: 1.5; }
+        
+        .document-title { font-size: 20pt; font-weight: 800; letter-spacing: 2px; margin: 0 0 10px 0; color: #1a202c; text-align: right; }
+        .document-details { font-size: 10pt; text-align: right; line-height: 1.6; }
+
+        /* Barra de Validación de AFIP / Seguridad */
+        .afip-style-bar {
+            background-color: #f8fafc;
+            border-top: 1px solid #1a202c;
+            border-bottom: 1px solid #1a202c;
+            padding: 6px 20px;
+            font-size: 7.5pt;
+            font-weight: bold;
+            color: #4a5568;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        
+        /* Código de seguimiento moderno */
+        .tracking-banner { 
+            background-color: #1a202c; 
+            color: #ffffff; 
+            padding: 12px 20px; 
+            margin-bottom: 20px; 
+            border-radius: 2px; 
+        }
         .tracking-table { width: 100%; border-collapse: collapse; }
-        .tracking-code-value { font-size: 14pt; font-weight: bold; letter-spacing: 1px; }
-        .tracking-route { text-align: right; font-weight: bold; color: #cbd5e0; }
+        .tracking-code-value { font-size: 13pt; font-weight: bold; letter-spacing: 1px; font-family: monospace; }
+        .tracking-route { text-align: right; font-weight: bold; color: #cbd5e0; font-size: 11pt; }
 
+        /* Bloques de Información de Clientes/Origen */
         .info-grid { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
-        .info-block { width: 50%; border: 1px solid #cbd5e0; padding: 12px; vertical-align: top; background-color: #f7fafc; }
-        .info-block-title { font-size: 9pt; font-weight: bold; text-transform: uppercase; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; margin-bottom: 8px;}
-        .info-label { color: #718096; width: 90px; display: inline-block; }
-        .info-value { font-weight: bold; }
+        .info-block { width: 50%; border: 1px solid #cbd5e0; padding: 15px; vertical-align: top; background-color: #ffffff; }
+        .info-block:first-child { border-right: none; }
+        .info-block-title { font-size: 8.5pt; font-weight: bold; text-transform: uppercase; color: #1a202c; border-bottom: 2px solid #1a202c; padding-bottom: 4px; margin-bottom: 10px;}
+        .info-row { margin-bottom: 6px; font-size: 9.5pt; }
+        .info-label { color: #718096; width: 85px; display: inline-block; }
+        .info-value { font-weight: 600; color: #2d3748; }
 
+        /* Tabla de Ítems Profesional */
         .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .items-table th { background-color: #2d3748; color: #ffffff; font-size: 9pt; padding: 10px; border: 1px solid #2d3748; text-transform: uppercase;}
-        .items-table td { padding: 12px; border: 1px solid #e2e8f0; }
+        .items-table th { background-color: #f1f5f9; color: #1a202c; font-size: 8.5pt; padding: 10px; border: 1px solid #cbd5e0; text-transform: uppercase; font-weight: bold; }
+        .items-table td { padding: 12px 10px; border: 1px solid #cbd5e0; font-size: 9.5pt; }
         
-        .signatures-container { margin-top: 40px; width: 100%; page-break-inside: avoid; }
-        .signature-block { width: 45%; display: inline-block; border: 1px solid #cbd5e0; border-top: 3px solid #4a5568; background: #f7fafc; padding: 15px; }
-        .signature-line { border-top: 1px dashed #a0aec0; width: 80%; margin: 40px auto 8px auto; }
-        .legal-footer { margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 10px; font-size: 7.5pt; color: #a0aec0; text-align: center; }
+        /* Firmas de conformidad */
+        .signatures-container { margin-top: 50px; width: 100%; page-break-inside: avoid; }
+        .signature-block { width: 48%; display: inline-block; border: 1px solid #cbd5e0; background: #f8fafc; padding: 20px; vertical-align: top; }
+        .signature-line { border-top: 1px dashed #718096; width: 85%; margin: 45px auto 10px auto; }
+        
+        .legal-footer { margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 8pt; color: #718096; text-align: center; }
+
+        /* Indicador visual de edición en vivo (No se imprime) */
+        [contenteditable="true"]:hover {
+            background-color: #f0fdf4;
+            outline: 1px dashed #22c55e;
+            cursor: pointer;
+        }
+        [contenteditable="true"]:focus {
+            background-color: #f0fdf4;
+            outline: 2px solid #22c55e;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header-container">
-        <div class="document-type-badge"><span>R</span></div>
-        <div class="document-type-text">DOCUMENTO NO VÁLIDO COMO FACTURA</div>
-        <div class="company-section">
-            <h1 class="company-title">PANROD LOGÍSTICA S.A.</h1>
-            <div class="company-subtitle">Distribuidora de Paquetería</div>
-            <div class="company-details">
-                <strong>Oficina Central:</strong> Av. Córdoba 1351, Piso 3 - OFICINA 7<br>
-                <strong>Tel:</strong> +54 9 221 310-9897 | <strong>CUIT:</strong> 30-71689422-9
-            </div>
+    <!-- Estructura Espejo Factura A -->
+    <div class="invoice-box">
+        <div class="letter-badge">
+            <span class="letter">R</span>
+            <span class="sub-letter">REMITO</span>
         </div>
-        <div class="document-section">
-            <h2 class="document-title">REMITO</h2>
-            <div><strong>N° Documento:</strong> 0001-00094772</div>
-            <div><strong>Despacho:</strong> 03 de Junio de 2026</div>
+        
+        <table class="header-table">
+            <tr>
+                <td class="left-header">
+                    <h1 class="company-title" contenteditable="true">PANROD LOGÍSTICA S.A.</h1>
+                    <div class="company-subtitle" contenteditable="true">Distribuidora de Paquetería</div>
+                    <div class="company-details">
+                        <strong>Oficina Central:</strong> <span contenteditable="true">Av. Córdoba 1351, Piso 3 - OFICINA 7</span><br>
+                        <strong>Tel:</strong> <span contenteditable="true">+54 9 221 310-9897</span><br>
+                        <strong>CUIT:</strong> <span contenteditable="true">30-71689422-9</span><br>
+                        <strong>Ingresos Brutos:</strong> <span contenteditable="true">30-71689422-9</span>
+                    </div>
+                </td>
+                <td>
+                    <h2 class="document-title">REMITO</h2>
+                    <div class="document-details">
+                        <strong>Documento N°:</strong> <span contenteditable="true" style="font-size: 11pt; font-weight: bold;">0001-00094772</span><br>
+                        <strong>Fecha de Emisión:</strong> <span contenteditable="true">03 de Junio de 2026</span><br>
+                        <br>
+                        <strong>I.V.A.:</strong> <span contenteditable="true">Responsable Inscripto</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        
+        <div class="afip-style-bar">
+            DOCUMENTO NO VÁLIDO COMO FACTURA • TRÁNSITO NACIONAL DE MERCADERÍAS
         </div>
-        <div style="clear: both;"></div>
     </div>
 
+    <!-- Barra de Tracking Comercial -->
     <div class="tracking-banner">
         <table class="tracking-table">
             <tr>
                 <td>
-                    <span style="font-size: 8pt; color: #a0aec0;">CÓDIGO DE SEGUIMIENTO</span>
-                    <div class="tracking-code-value">ACC-94772</div>
+                    <span style="font-size: 7.5pt; color: #cbd5e0; display: block; margin-bottom: 2px; font-weight: bold;">CÓDIGO DE SEGUIMIENTO EN LÍNEA</span>
+                    <div class="tracking-code-value" contenteditable="true">ACC-94772</div>
                 </td>
-                <td class="tracking-route">XBG1 &gt; SET1 &gt; A2</td>
+                <td class="tracking-route">
+                    <span style="font-size: 7.5pt; color: #cbd5e0; display: block; margin-bottom: 2px; font-weight: normal;">HOJA DE RUTA</span>
+                    <span contenteditable="true">XBG1 &gt; SET1 &gt; A2</span>
+                </td>
             </tr>
         </table>
     </div>
 
+    <!-- Información de Origen y Destino -->
     <table class="info-grid">
         <tr>
             <td class="info-block">
-                <div class="info-block-title">Origen de Carga</div>
-                <div><span class="info-label">Planta:</span><span class="info-value">Centro Logístico XBG1</span></div>
-                <div><span class="info-label">Dirección:</span><span class="info-value">Av. Córdoba 1351, CABA</span></div>
+                <div class="info-block-title">Origen de Carga / Despacho</div>
+                <div class="info-row"><span class="info-label">Planta:</span><span class="info-value" contenteditable="true">Centro Logístico XBG1</span></div>
+                <div class="info-row"><span class="info-label">Dirección:</span><span class="info-value" contenteditable="true">Av. Córdoba 1351, CABA</span></div>
+                <div class="info-row"><span class="info-label">Provincia:</span><span class="info-value" contenteditable="true">Buenos Aires</span></div>
             </td>
             <td class="info-block">
-                <div class="info-block-title">Destinatario / Cliente</div>
-                <div><span class="info-label">Nombre:</span><span class="info-value">Marcelo Rodríguez</span></div>
-                <div><span class="info-label">DNI:</span><span class="info-value">24.111.748</span></div>
+                <div class="info-block-title">Destinatario / Comprobante de Recepción</div>
+                <div class="info-row"><span class="info-label">Razón Social:</span><span class="info-value" contenteditable="true">Marcelo Rodríguez</span></div>
+                <div class="info-row"><span class="info-label">DNI / CUIT:</span><span class="info-value" contenteditable="true">24.111.748</span></div>
+                <div class="info-row"><span class="info-label">Cond. IVA:</span><span class="info-value" contenteditable="true">Consumidor Final</span></div>
             </td>
         </tr>
     </table>
 
+    <!-- Tabla de Productos / Bultos -->
     <table class="items-table">
         <thead>
             <tr>
-                <th style="text-align: center; width: 20%;">Código de Barra</th>
-                <th>Descripción del Envío</th>
-                <th style="text-align: center; width: 20%;">Cantidad</th>
+                <th style="text-align: center; width: 20%;">Código de Barra / SKU</th>
+                <th style="text-align: left; width: 45%;">Descripción de la Mercancía / Concepto</th>
+                <th style="text-align: center; width: 20%;">Cantidad / Unidad</th>
                 <th style="text-align: center; width: 15%;">Lote ID</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td style="text-align: center; font-family: monospace; font-weight: bold;">84377594200009</td>
-                <td><strong>Mercancía Liviana/Pesada de Distribución Nacional</strong><br><span style="font-size: 8.5pt; color:#4a5568;">Control de Unidad Operativa N° 13</span></td>
-                <td style="text-align: center; font-weight: bold;">LOTE - 200 Unidades</td>
-                <td style="text-align: center; font-weight: bold;">28</td>
+                <td style="text-align: center; font-family: monospace; font-weight: bold;" contenteditable="true">84377594200009</td>
+                <td>
+                    <strong contenteditable="true">Mercancía Liviana/Pesada de Distribución Nacional</strong><br>
+                    <span style="font-size: 8.5pt; color:#4a5568;" contenteditable="true">Control de Unidad Operativa N° 13</span>
+                </td>
+                <td style="text-align: center; font-weight: bold;" contenteditable="true">LOTE - 200 Unidades</td>
+                <td style="text-align: center; font-weight: bold;" contenteditable="true">28</td>
             </tr>
         </tbody>
     </table>
 
+    <!-- Sector de Firmas y Validación -->
     <div class="signatures-container">
         <div class="signature-block">
-            <div style="text-align: center; font-weight: bold; font-size: 9pt;">ENTREGÓ (PANROD LOGÍSTICA)</div>
+            <div style="text-align: center; font-weight: bold; font-size: 9pt; color: #1a202c;">EMISIÓN Y LOGÍSTICA</div>
             <div class="signature-line"></div>
-            <div style="font-size: 8pt; color: #718096; text-align: center;">Firma del Transportista / Chofer</div>
+            <div style="font-size: 8pt; color: #718096; text-align: center; font-weight: bold;" contenteditable="true">PANROD LOGÍSTICA S.A.</div>
+            <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Firma Autorizada del Transportista</div>
         </div>
         <div class="signature-block" style="float: right;">
-            <div style="text-align: center; font-weight: bold; font-size: 9pt;">RECIBIÓ CONFORME CLIENTE</div>
+            <div style="text-align: center; font-weight: bold; font-size: 9pt; color: #1a202c;">RECEPCIÓN CONFORME CLIENTE</div>
             <div class="signature-line"></div>
-            <div style="font-size: 8pt; color: #718096; text-align: center;">Firma, Aclaración y DNI del Destinatario</div>
+            <div style="font-size: 8pt; color: #718096; text-align: center; font-weight: bold;">CONFORMIDAD DE ENTREGA</div>
+            <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Firma, Aclaración y DNI / Sello del Receptor</div>
         </div>
         <div style="clear: both;"></div>
     </div>
 
     <div class="legal-footer">
-        SISTEMA DE DISTRIBUCIÓN NACIONAL • PANROD LOGÍSTICA S.A.
+        SISTEMA DE DISTRIBUCION INTEGRAL • REGISTRO DE TRÁNSITO INTERNO • DOCUMENTO DE CONTROL OPERATIVO
     </div>
 
 </body>
-  </html>
-          
+    </html>
+    
