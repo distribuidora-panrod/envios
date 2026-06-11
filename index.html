@@ -778,20 +778,23 @@ text-transform:uppercase;
 color:#0284c7;
 }
 
-.loader{
-width:60px;
-height:60px;
-margin:auto;
-border:6px solid #e2e8f0;
-border-top:6px solid #0284c7;
-border-radius:50%;
-animation:spin 1s linear infinite;
+/* Loader eficiente que no genera lag */
+.loader-eficiente {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #e2e8f0;
+  border-radius: 50%;
+  /* En vez de animar el borde, usamos una máscara o recortamos */
+  border-right-color: #0284c7; 
+  /* transform: rotate no genera Reflow en el navegador */
+  animation: spinEficiente 0.8s linear infinite;
 }
 
-@keyframes spin{
-0%{transform:rotate(0deg);}
-100%{transform:rotate(360deg);}
+@keyframes spinEficiente {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
+
 </style>
 </head>
 <body>
