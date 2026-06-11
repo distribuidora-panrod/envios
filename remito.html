@@ -126,9 +126,41 @@
         
         /* Bloques de Firmas */
         .signatures-container { margin-top: 50px; width: 100%; page-break-inside: avoid; }
-        .signature-block { width: 48%; display: inline-block; border: 1px solid #cbd5e0; background: #f8fafc; padding: 20px; vertical-align: top; }
-        .signature-line { border-top: 1px dashed #718096; width: 85%; margin: 45px auto 10px auto; }
+        .signature-block { width: 48%; display: inline-block; border: 1px solid #cbd5e0; background: #f8fafc; padding: 20px; vertical-align: top; text-align: center; }
         
+        /* Área de lienzo digital para la firma */
+        .signature-canvas-wrapper {
+            position: relative;
+            width: 100%;
+            height: 80px;
+            margin-top: 15px;
+            background: #ffffff;
+            border: 1px inset #e2e8f0;
+            border-radius: 4px;
+        }
+        .signature-canvas {
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+            display: block;
+        }
+        .signature-line { border-top: 1px dashed #718096; width: 85%; margin: 8px auto 10px auto; }
+        
+        /* Botón para limpiar la firma */
+        .btn-clear-sig {
+            background: #cbd5e0;
+            border: none;
+            color: #4a5568;
+            font-size: 7.5pt;
+            padding: 2px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 5px;
+            transition: background 0.2s;
+        }
+        .btn-clear-sig:hover { background: #a0aec0; }
+
         .legal-footer { margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 8pt; color: #718096; text-align: center; }
 
         /* Estilos Interactivos para el Editor en Vivo */
@@ -142,7 +174,7 @@
             outline: 2px solid #22c55e;
         }
 
-        /* CAMBIO AQUÍ: Panel de Control Flotante Abajo a la Derecha */
+        /* Panel de Control Flotante */
         .action-panel {
             position: fixed;
             bottom: 20px;
@@ -178,7 +210,7 @@
         .btn-hide { background-color: #718096; color: white; padding: 10px 10px; }
         .btn-hide:hover { background-color: #4a5568; }
 
-        /* Botón discreto para volver a mostrar el panel si se ocultó */
+        /* Botón discreto para volver a mostrar el panel */
         .show-panel-trigger {
             position: fixed;
             bottom: 10px;
@@ -198,7 +230,8 @@
 
         /* Ocultar elementos de interfaz en la impresión del sistema operativo */
         @media print {
-            .action-panel, .show-panel-trigger { display: none !important; }
+            .action-panel, .show-panel-trigger, .btn-clear-sig { display: none !important; }
+            .signature-canvas-wrapper { border: none !important; background: transparent !important; }
             [contenteditable="true"]:hover, [contenteditable="true"]:focus {
                 background-color: transparent !important;
                 outline: none !important;
@@ -312,13 +345,20 @@
         <div class="signatures-container">
             <div class="signature-block">
                 <div style="text-align: center; font-weight: bold; font-size: 9pt; color: #1a202c;">EMISIÓN Y LOGÍSTICA</div>
+                
+                <div class="signature-canvas-wrapper">
+                    <canvas id="firmaTransportista" class="signature-canvas"></canvas>
+                </div>
+                
                 <div class="signature-line"></div>
+                <button class="btn-clear-sig" onclick="borrarFirma()">Borrar Firma</button>
                 <div style="font-size: 8pt; color: #718096; text-align: center; font-weight: bold;" contenteditable="true">PANROD LOGÍSTICA S.A.</div>
-                <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Firma Autorizada del Transportista</div>
+                <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Firma Digitalizada / Chofer asignado</div>
             </div>
+            
             <div class="signature-block" style="float: right;">
                 <div style="text-align: center; font-weight: bold; font-size: 9pt; color: #1a202c;">RECEPCIÓN CONFORME CLIENTE</div>
-                <div class="signature-line"></div>
+                <div style="height: 80px; margin-top: 15px;"></div> <div class="signature-line"></div>
                 <div style="font-size: 8pt; color: #718096; text-align: center; font-weight: bold;">CONFORMIDAD DE ENTREGA</div>
                 <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Firma, Aclaración y DNI / Sello del Receptor</div>
             </div>
@@ -332,7 +372,72 @@
     </div>
 
     <script>
-        // Función para ocultar o mostrar manualmente los controles
+        // --- LÓGICA DE FIRMA EN PANTALLA (CANVAS) ---
+        const canvas = document.getElementById('firmaTransportista');
+        const ctx = canvas.getContext('2d');
+        let dibujando = false;
+
+        // Ajustar el tamaño interno del canvas al tamaño real visible en pantalla
+        function ajustarCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            // Estilos de la línea de firma
+            ctx.strokeStyle = "#1e3a8a"; // Azul oscuro institucional
+            ctx.lineWidth = 2;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+        }
+
+        // Eventos para Mouse
+        canvas.addEventListener('mousedown', (e) => {
+            dibujando = true;
+            ctx.beginPath();
+            ctx.moveTo(e.offsetX, e.offsetY);
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (dibujando) {
+                ctx.lineTo(e.offsetX, e.offsetY);
+                ctx.stroke();
+            }
+        });
+
+        window.addEventListener('mouseup', () => dibujando = false);
+
+        // Eventos para Pantallas Táctiles (Celulares y Tablets)
+        canvas.addEventListener('touchstart', (e) => {
+            dibujando = true;
+            ctx.beginPath();
+            const t = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
+            e.preventDefault();
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (dibujando) {
+                const t = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top);
+                ctx.stroke();
+            }
+            e.preventDefault();
+        }, { passive: false });
+
+        window.addEventListener('touchend', () => dibujando = false);
+
+        // Función del botón borrar
+        function borrarFirma() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Inicializar canvas al cargar la página y al redimensionar
+        window.addEventListener('load', ajustarCanvas);
+        window.addEventListener('resize', ajustarCanvas);
+
+
+        // --- LÓGICA DE EXPORTACIÓN Y CONTROLES ---
         function alternarPanel(visible) {
             const panel = document.getElementById('actionPanel');
             const trigger = document.getElementById('showTrigger');
@@ -345,53 +450,16 @@
             }
         }
 
-        // 1. Exportar a PDF usando el motor de impresión nativo del sistema
         function exportarPDF() {
             if (document.activeElement) { document.activeElement.blur(); }
             window.print();
         }
 
-        // 2. Exportar a Imagen PNG procesando el contenedor de la factura
         function exportarImagen() {
             const panel = document.getElementById('actionPanel');
             const trigger = document.getElementById('showTrigger');
             const target = document.getElementById('remitoContainer');
+            const btnClear = document.querySelector('.btn-clear-sig');
             
-            // Guardamos el estado actual de visualización del panel
             const panelOriginalDisplay = panel.style.display;
-            const triggerOriginalDisplay = trigger.style.display;
-
-            // Ocultamos todo control visual antes del renderizado matemático
-            panel.style.display = 'none';
-            trigger.style.display = 'none';
-
-            // Obtener el número de documento dinámico para nombrar el archivo
-            const nroDocElement = target.querySelector('span[style*="font-size: 11pt"]');
-            const nroDoc = nroDocElement ? nroDocElement.innerText.trim() : 'remito';
-
-            html2canvas(target, {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: '#ffffff'
-            }).then(canvas => {
-                // Restauramos los paneles a su estado previo
-                panel.style.display = panelOriginalDisplay;
-                trigger.style.display = triggerOriginalDisplay;
-
-                // Descarga automática
-                const link = document.createElement('a');
-                link.download = `Remito_${nroDoc}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            }).catch(error => {
-                console.error("Error generando la imagen:", error);
-                panel.style.display = panelOriginalDisplay;
-                trigger.style.display = triggerOriginalDisplay;
-                alert("Hubo un error al procesar el documento como imagen.");
-            });
-        }
-    </script>
-
-</body>
-    </html>
-    
+            const triggerOriginalDisplay = 
