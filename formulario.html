@@ -418,9 +418,21 @@ const baseDeDatosOrdenes = {
     // Para agregar más clientes en el futuro seguís la misma estructura abajo
 };
 
-/* ===== FUNCIÓN VALIDAR CÓDIGO INICIAL ===== */
+/* ===== FUNCIÓN VALIDAR CÓDIGO INICIAL (CORREGIDA Y FLEXIBLE) ===== */
 function validarCodigoSistema() {
-    const codigoIngresado = document.getElementById("input-busqueda").value.trim().toUpperCase();
+    // 1. Capturamos lo que puso el usuario
+    let codigoIngresado = document.getElementById("input-busqueda").value;
+    
+    // 2. Control de seguridad: si está vacío, avisar al usuario
+    if (!codigoIngresado || codigoIngresado.trim() === "") {
+        alert("⚠️ Por favor, ingrese un código de seguimiento para realizar la consulta.");
+        return;
+    }
+
+    // 3. Normalización: Quitamos espacios extra y pasamos todo a MAYÚSCULAS
+    codigoIngresado = codigoIngresado.trim().toUpperCase();
+
+    // 4. Buscamos en nuestra base de datos interna
     const ordenEncontrada = baseDeDatosOrdenes[codigoIngresado];
 
     if (ordenEncontrada) {
@@ -435,9 +447,11 @@ function validarCodigoSistema() {
         document.getElementById("wrapper-busqueda").style.display = "none";
         document.getElementById("wrapper-formulario").style.display = "block";
     } else {
-        alert("❌ Error de Servidor: El código de seguimiento ingresado no se encuentra asignado a ningún bulto en nuestra planta de acopio actual.");
+        // Alerta visual clara si el código no coincide exactamente con la base de datos
+        alert("❌ Error de Servidor: El código '" + codigoIngresado + "' no se encuentra registrado en el centro de acopio.\n\nVerifique que coincida exactamente con el código provisto (ej: PR-BDG-40526).");
     }
 }
+
 
 /* ===== GENERAR VISTA PREVIA RESUMEN ===== */
 function generarVistaPrevia(){
