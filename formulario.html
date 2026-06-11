@@ -517,4 +517,62 @@ function enviarWhatsApp(){
 • Dirección Postal: ${document.getElementById("direccion").value}
 
 🚚 *Plan de Distribución*
-• Tipo de Tránsito: ${modalidad === "Express" ? "Express Prioritario (24hs)" : "Normal Estándar (72hs
+• Tipo de Tránsito: ${modalidad === "Express" ? "Express Prioritario (24hs)" : "Normal Estándar (72hs)"}
+• Tasa Logística Tasada: $${tasaLogistica.toLocaleString("es-AR")}
+
+💳 *Canal Operativo Contable Seleccionado:*
+${document.getElementById("metodoPago").value}
+
+━━━━━━━━━━━━━━━━━━
+📌 Formulario de destino cargado de manera correcta. El bulto se encuentra en espera de las coordenadas bancarias para la liquidación formal del despacho.`;
+
+    window.open("https://wa.me/542213109897?text=" + encodeURIComponent(mensaje), "_blank");
+}
+
+/* ===== COSTOS ===== */
+function actualizarCosto(){
+    const provincia = document.getElementById("provincia").value;
+    const box = document.getElementById("tarifaBox");
+
+    if(provincia === ""){
+        box.style.display = "none";
+        return;
+    }
+
+    const tarifas = obtenerCostoProvincia(provincia);
+    costoActual = tarifas; 
+
+    box.style.display = "block";
+    document.getElementById("precioNormal").innerText = "$" + tarifas.normal.toLocaleString("es-AR");
+    document.getElementById("precioExpress").innerText = "$" + tarifas.express.toLocaleString("es-AR");
+}
+
+function obtenerCostoProvincia(provincia){
+    switch(provincia){
+        case "Buenos Aires":
+        case "CABA":
+            return {normal:9500,express:18000};
+        case "Santa Fe":
+        case "Córdoba":
+        case "Entre Ríos":
+            return {normal:15000,express:21000};
+        case "Mendoza":
+        case "San Juan":
+        case "San Luis":
+            return {normal:21000,express:29000};
+        case "Neuquén":
+        case "Río Negro":
+        case "La Pampa":
+            return {normal:29000,express:35000};
+        case "Chubut":
+        case "Santa Cruz":
+        case "Tierra del Fuego":
+            return {normal:35000,express:41000};
+        default:
+            return {normal:9500,express:15000};
+    }
+}
+</script>
+
+</body>
+</html>
