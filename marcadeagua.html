@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creador de Marca de Agua</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Contenedor de la botonera */
+        .controls {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            border: none;
+        }
+
+        .btn-download {
+            background-color: #28a745;
+            display: none; /* Se muestra solo cuando hay una imagen cargada */
+        }
+
+        /* Contenedor del lienzo/preview */
+        .canvas-container {
+            position: relative;
+            max-width: 100%;
+            width: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            display: none; /* Oculto hasta que se suba una foto */
+        }
+
+        /* La foto que sube el usuario */
+        #userImage {
+            width: 100%;
+            display: block;
+            height: auto;
+        }
+
+        /* Capa de la marca de agua (Tu Logo) */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%; /* Ajustá el tamaño del logo acá */
+            pointer-events: none; /* Para que no moleste al tocar la pantalla */
+            
+            /* Efectos para que actúe como marca de agua sobre el fondo */
+            opacity: 0.4; 
+            mix-blend-mode: screen; /* Hace transparente el fondo negro del logo en fotos oscuras/claras */
+            filter: brightness(1.5); /* Le da un toque más vivo a las líneas */
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Proteger Mis Imágenes</h2>
+
+    <div class="controls">
+        <label for="fileInput" class="btn">📷 Seleccionar Foto del Celu</label>
+        <input type="file" id="fileInput" accept="image/*">
+        <button id="downloadBtn" class="btn btn-download">⬇️ Descargar Protegida</button>
+    </div>
+
+    <div class="canvas-container" id="previewContainer">
+        <img id="userImage" src="" alt="Tu foto">
+        <img class="watermark" src="logo_panrod.png" alt="Logo Watermark">
+    </div>
+
+    <canvas id="mainCanvas" style="display:none;"></canvas>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const userImage = document.getElementById('userImage');
+        const previewContainer = document.getElementById('previewContainer');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Ruta de tu logo (asegurate de tenerlo en la misma carpeta con este nombre)
+        const logoSrc = 'logo_panrod.png'; 
+        const watermarkImg = new Image();
+        watermarkImg.src = logoSrc;
+
+        // 1. Leer el archivo del celular y mostrar la preview
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    userImage.src = event.target.result;
+                    userImage.onload = function() {
+                        previewContainer.style.display = 'block';
+                        downloadBtn.style.style = 'block';
+                        downloadBtn.style.display = 'block';
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 2. Combinar imágenes en el Canvas y descargar
+        downloadBtn.addEventListener('click', function() {
+            // Ajustamos el tamaño del canvas al tamaño real de la foto subida
+            canvas.width = userImage.naturalWidth;
+            canvas.height = userImage.naturalHeight;
+
+            // Dibujar la foto de fondo
+            ctx.drawImage(userImage, 0, 0);
+
+            // Calcular tamaño y posición del logo centrado (ej: 50% del ancho de la foto)
+            const logoWidth = canvas.width * 0.5;
+            const logoHeight = (watermarkImg.naturalHeight / watermarkImg.naturalWidth) * logoWidth;
+            const x = (canvas.width - logoWidth) / 2;
+            const y = (canvas.height - logoHeight) / 2;
+
+            // Aplicar efectos de fusión en el canvas para emular el CSS
+            ctx.save();
+            ctx.globalAlpha = 0.4; // Opacidad de la marca de agua
+            ctx.globalCompositeOperation = 'screen'; // Modo de fusión para remover el fondo negro
+            ctx.drawImage(watermarkImg, x, y, logoWidth, logoHeight);
+            ctx.restore();
+
+            // Crear el enlace de descarga
+            const link = document.createElement('a');
+            link.download = 'foto_protegida.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html>
