@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creador de Marca de Agua</title>
+    <title>Creador de Marca de Agua Dinámico</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,7 +20,6 @@
             margin-bottom: 20px;
         }
 
-        /* Contenedor de la botonera */
         .controls {
             background: white;
             padding: 15px;
@@ -32,7 +31,7 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         input[type="file"] {
@@ -48,11 +47,25 @@
             cursor: pointer;
             font-weight: bold;
             border: none;
+            display: block;
+        }
+
+        .btn-logo {
+            background-color: #6c757d;
         }
 
         .btn-download {
             background-color: #28a745;
-            display: none; /* Se muestra solo cuando hay una imagen cargada */
+            display: none; 
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
         }
 
         /* Contenedor del lienzo/preview */
@@ -63,63 +76,74 @@
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-            display: none; /* Oculto hasta que se suba una foto */
+            display: none; 
         }
 
-        /* La foto que sube el usuario */
         #userImage {
             width: 100%;
             display: block;
             height: auto;
         }
 
-        /* Capa de la marca de agua (Tu Logo) */
+        /* Capa de la marca de agua dinámica */
         .watermark {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 60%; /* Ajustá el tamaño del logo acá */
-            pointer-events: none; /* Para que no moleste al tocar la pantalla */
+            width: 50%; 
+            pointer-events: none; 
+            display: none; /* Se muestra solo cuando se carga el logo */
             
-            /* Efectos para que actúe como marca de agua sobre el fondo */
-            opacity: 0.4; 
-            mix-blend-mode: screen; /* Hace transparente el fondo negro del logo en fotos oscuras/claras */
-            filter: brightness(1.5); /* Le da un toque más vivo a las líneas */
+            /* Efectos de fusión iniciales */
+            opacity: 0.5; 
+            mix-blend-mode: screen; 
         }
     </style>
 </head>
 <body>
 
-    <h2>Proteger Mis Imágenes</h2>
+    <h2>Fusionar y Proteger Imágenes</h2>
 
     <div class="controls">
-        <label for="fileInput" class="btn">📷 Seleccionar Foto del Celu</label>
+        <label for="fileInput" class="btn">📷 1. Seleccionar Imagen de Fondo</label>
         <input type="file" id="fileInput" accept="image/*">
-        <button id="downloadBtn" class="btn btn-download">⬇️ Descargar Protegida</button>
+
+        <label for="logoInput" class="btn btn-logo">🖼️ 2. Seleccionar Logo / Sello</label>
+        <input type="file" id="logoInput" accept="image/*">
+
+        <div class="slider-container">
+            <label for="opacitySlider">Transparencia de Fusión:</label>
+            <input type="range" id="opacitySlider" min="0" max="1" step="0.05" value="0.5">
+        </div>
+
+        <button id="downloadBtn" class="btn btn-download">⬇️ Descargar Combinada</button>
     </div>
 
     <div class="canvas-container" id="previewContainer">
-        <img id="userImage" src="" alt="Tu foto">
-        <img class="watermark" src="logo_panrod.png" alt="Logo Watermark">
+        <img id="userImage" src="" alt="Fondo">
+        <img class="watermark" id="watermarkPreview" src="" alt="Logo">
     </div>
 
     <canvas id="mainCanvas" style="display:none;"></canvas>
 
     <script>
         const fileInput = document.getElementById('fileInput');
+        const logoInput = document.getElementById('logoInput');
         const userImage = document.getElementById('userImage');
+        const watermarkPreview = document.getElementById('watermarkPreview');
         const previewContainer = document.getElementById('previewContainer');
         const downloadBtn = document.getElementById('downloadBtn');
+        const opacitySlider = document.getElementById('opacitySlider');
         const canvas = document.getElementById('mainCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Ruta de tu logo (asegurate de tenerlo en la misma carpeta con este nombre)
-        const logoSrc = 'logo_panrod.png'; 
+        // Objetos de imagen en memoria para el Canvas
+        let baseImgLoaded = false;
+        let logoImgLoaded = false;
         const watermarkImg = new Image();
-        watermarkImg.src = logoSrc;
 
-        // 1. Leer el archivo del celular y mostrar la preview
+        // 1. Leer imagen de fondo
         fileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -128,42 +152,85 @@
                     userImage.src = event.target.result;
                     userImage.onload = function() {
                         previewContainer.style.display = 'block';
-                        downloadBtn.style.style = 'block';
-                        downloadBtn.style.display = 'block';
+                        baseImgLoaded = true;
+                        checkReady();
                     }
                 }
                 reader.readAsDataURL(file);
             }
         });
 
-        // 2. Combinar imágenes en el Canvas y descargar
+        // 2. Leer imagen del Logo dinámicamente
+        logoInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    watermarkPreview.src = event.target.result;
+                    watermarkImg.src = event.target.result;
+                    
+                    watermarkPreview.onload = function() {
+                        watermarkPreview.style.display = 'block';
+                        logoImgLoaded = true;
+                        checkReady();
+                    }
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Controlar la opacidad en vivo (CSS Preview)
+        opacitySlider.addEventListener('input', function(e) {
+            watermarkPreview.style.opacity = e.target.value;
+        });
+
+        // Mostrar botón de descarga si la imagen de fondo ya está lista
+        function checkReady() {
+            if (baseImgLoaded) {
+                downloadBtn.style.display = 'block';
+            }
+        }
+
+        // 3. Procesar Canvas final con fusión e interpolación limpia
         downloadBtn.addEventListener('click', function() {
-            // Ajustamos el tamaño del canvas al tamaño real de la foto subida
+            if (!baseImgLoaded) return;
+
+            // Dimensiones nativas de la imagen de fondo
             canvas.width = userImage.naturalWidth;
             canvas.height = userImage.naturalHeight;
 
-            // Dibujar la foto de fondo
+            // Dibujar fondo limpio
             ctx.drawImage(userImage, 0, 0);
 
-            // Calcular tamaño y posición del logo centrado (ej: 50% del ancho de la foto)
-            const logoWidth = canvas.width * 0.5;
-            const logoHeight = (watermarkImg.naturalHeight / watermarkImg.naturalWidth) * logoWidth;
-            const x = (canvas.width - logoWidth) / 2;
-            const y = (canvas.height - logoHeight) / 2;
+            // Si el usuario cargó un logo, lo procesamos y fusionamos centrado
+            if (logoImgLoaded) {
+                // Definimos que ocupe el 50% del ancho del fondo
+                const logoWidth = canvas.width * 0.5;
+                const logoHeight = (watermarkImg.naturalHeight / watermarkImg.naturalWidth) * logoWidth;
+                
+                // Centrado exacto
+                const x = (canvas.width - logoWidth) / 2;
+                const y = (canvas.height - logoHeight) / 2;
 
-            // Aplicar efectos de fusión en el canvas para emular el CSS
-            ctx.save();
-            ctx.globalAlpha = 0.4; // Opacidad de la marca de agua
-            ctx.globalCompositeOperation = 'screen'; // Modo de fusión para remover el fondo negro
-            ctx.drawImage(watermarkImg, x, y, logoWidth, logoHeight);
-            ctx.restore();
+                ctx.save();
+                // Aplicamos el valor del slider de opacidad
+                ctx.globalAlpha = opacitySlider.value; 
+                
+                // 'screen' mantiene lo claro y oculta los fondos oscuros/negros del logo.
+                // Si preferís superposición estándar con transparencias PNG nativas, cambiá a 'source-over'.
+                ctx.globalCompositeOperation = 'screen'; 
+                
+                ctx.drawImage(watermarkImg, x, y, logoWidth, logoHeight);
+                ctx.restore();
+            }
 
-            // Crear el enlace de descarga
+            // Descarga automática del archivo resultante
             const link = document.createElement('a');
-            link.download = 'foto_protegida.png';
+            link.download = 'imagen_fusionada.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
     </script>
 </body>
-</html>
+    </html>
+    
