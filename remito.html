@@ -21,23 +21,20 @@
             margin: 0; padding: 0;
             color: #2d3748; background-color: #ffffff;
             font-size: 10pt; line-height: 1.4;
-            padding-bottom: 80px; /* Espacio para que el panel inferior no tape el pie de página */
+            padding-bottom: 80px;
         }
 
-        /* Contenedor principal que se exportará */
         .printable-content {
             background-color: #ffffff;
             padding: 5px;
         }
         
-        /* Estructura Tipo Factura A */
         .invoice-box {
             border: 1px solid #1a202c;
             position: relative;
             margin-bottom: 20px;
         }
         
-        /* Letra corporativa centralizada */
         .letter-badge {
             position: absolute;
             top: 0;
@@ -52,31 +49,12 @@
             background: #ffffff;
             z-index: 10;
         }
-        .letter-badge .letter {
-            font-size: 22pt;
-            font-weight: 800;
-            line-height: 42px;
-            display: block;
-        }
-        .letter-badge .sub-letter {
-            font-size: 6pt;
-            display: block;
-            margin-top: -5px;
-            color: #4a5568;
-        }
+        .letter-badge .letter { font-size: 22pt; font-weight: 800; line-height: 42px; display: block; }
+        .letter-badge .sub-letter { font-size: 6pt; display: block; margin-top: -5px; color: #4a5568; }
 
-        .header-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .header-table td {
-            width: 50%;
-            padding: 20px;
-            vertical-align: top;
-        }
-        .left-header {
-            border-right: 1px solid #1a202c;
-        }
+        .header-table { width: 100%; border-collapse: collapse; }
+        .header-table td { width: 50%; padding: 20px; vertical-align: top; }
+        .left-header { border-right: 1px solid #1a202c; }
         
         .company-title { font-size: 16pt; font-weight: 800; color: #1a202c; margin: 0 0 5px 0; letter-spacing: -0.5px; }
         .company-subtitle { font-size: 9pt; text-transform: uppercase; color: #4a5568; font-weight: bold; margin-bottom: 10px; }
@@ -85,7 +63,6 @@
         .document-title { font-size: 20pt; font-weight: 800; letter-spacing: 2px; margin: 0 0 10px 0; color: #1a202c; text-align: right; }
         .document-details { font-size: 10pt; text-align: right; line-height: 1.6; }
 
-        /* Barra de Validación Estilo AFIP */
         .afip-style-bar {
             background-color: #f8fafc;
             border-top: 1px solid #1a202c;
@@ -98,19 +75,11 @@
             letter-spacing: 1px;
         }
         
-        /* Seguimiento Comercial */
-        .tracking-banner { 
-            background-color: #1a202c; 
-            color: #ffffff; 
-            padding: 12px 20px; 
-            margin-bottom: 20px; 
-            border-radius: 2px; 
-        }
+        .tracking-banner { background-color: #1a202c; color: #ffffff; padding: 12px 20px; margin-bottom: 20px; border-radius: 2px; }
         .tracking-table { width: 100%; border-collapse: collapse; }
         .tracking-code-value { font-size: 13pt; font-weight: bold; letter-spacing: 1px; font-family: monospace; }
         .tracking-route { text-align: right; font-weight: bold; color: #cbd5e0; font-size: 11pt; }
 
-        /* Bloques de Información */
         .info-grid { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
         .info-block { width: 50%; border: 1px solid #cbd5e0; padding: 15px; vertical-align: top; background-color: #ffffff; }
         .info-block:first-child { border-right: none; }
@@ -119,34 +88,30 @@
         .info-label { color: #718096; width: 85px; display: inline-block; }
         .info-value { font-weight: 600; color: #2d3748; }
 
-        /* Tabla de Ítems */
         .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
         .items-table th { background-color: #f1f5f9; color: #1a202c; font-size: 8.5pt; padding: 10px; border: 1px solid #cbd5e0; text-transform: uppercase; font-weight: bold; }
         .items-table td { padding: 12px 10px; border: 1px solid #cbd5e0; font-size: 9.5pt; }
         
-        /* Bloques de Firmas */
         .signatures-container { margin-top: 50px; width: 100%; page-break-inside: avoid; }
         .signature-block { width: 48%; display: inline-block; border: 1px solid #cbd5e0; background: #f8fafc; padding: 20px; vertical-align: top; text-align: center; }
         
-        /* Área de lienzo digital para la firma */
+        /* Contenedor de firma modificado para imagen */
         .signature-canvas-wrapper {
             position: relative;
             width: 100%;
             height: 80px;
             margin-top: 15px;
             background: #ffffff;
-            border: 1px inset #e2e8f0;
+            border: 1px dashed #cbd5e0;
             border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
-        .signature-canvas {
-            width: 100%;
-            height: 100%;
-            cursor: crosshair;
-            display: block;
-        }
+        
         .signature-line { border-top: 1px dashed #718096; width: 85%; margin: 8px auto 10px auto; }
         
-        /* Botón para limpiar la firma */
         .btn-clear-sig {
             background: #cbd5e0;
             border: none;
@@ -163,79 +128,33 @@
 
         .legal-footer { margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 8pt; color: #718096; text-align: center; }
 
-        /* Estilos Interactivos para el Editor en Vivo */
-        [contenteditable="true"]:hover {
-            background-color: #f0fdf4;
-            outline: 1px dashed #22c55e;
-            cursor: pointer;
-        }
-        [contenteditable="true"]:focus {
-            background-color: #f0fdf4;
-            outline: 2px solid #22c55e;
-        }
+        [contenteditable="true"]:hover { background-color: #f0fdf4; outline: 1px dashed #22c55e; cursor: pointer; }
+        [contenteditable="true"]:focus { background-color: #f0fdf4; outline: 2px solid #22c55e; }
 
-        /* Panel de Control Flotante */
         .action-panel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.98);
-            padding: 12px;
-            border-radius: 8px;
-            box-shadow: 0 4px 25px rgba(0,0,0,0.2);
-            z-index: 10000;
-            border: 1px solid #cbd5e0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            gap: 8px;
-            align-items: center;
+            position: fixed; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.98);
+            padding: 12px; border-radius: 8px; box-shadow: 0 4px 25px rgba(0,0,0,0.2);
+            z-index: 10000; border: 1px solid #cbd5e0; font-family: Arial, sans-serif;
+            display: flex; gap: 8px; align-items: center;
         }
-        .btn {
-            display: inline-block;
-            padding: 10px 16px;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 9pt;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-        }
+        .btn { display: inline-block; padding: 10px 16px; border: none; border-radius: 4px; font-weight: bold; font-size: 9pt; cursor: pointer; transition: all 0.2s ease; text-align: center; }
         .btn-pdf { background-color: #dc2626; color: white; }
         .btn-pdf:hover { background-color: #b91c1c; }
-        
         .btn-img { background-color: #2563eb; color: white; }
         .btn-img:hover { background-color: #1d4ed8; }
-
         .btn-hide { background-color: #718096; color: white; padding: 10px 10px; }
         .btn-hide:hover { background-color: #4a5568; }
 
-        /* Botón discreto para volver a mostrar el panel */
         .show-panel-trigger {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            background: #1a202c;
-            color: white;
-            padding: 5px 10px;
-            font-size: 7.5pt;
-            border-radius: 4px;
-            cursor: pointer;
-            display: none;
-            z-index: 9999;
-            font-weight: bold;
-            opacity: 0.7;
+            position: fixed; bottom: 10px; right: 10px; background: #1a202c; color: white;
+            padding: 5px 10px; font-size: 7.5pt; border-radius: 4px; cursor: pointer; display: none; z-index: 9999; font-weight: bold; opacity: 0.7;
         }
         .show-panel-trigger:hover { opacity: 1; }
 
-        /* Ocultar elementos de interfaz en la impresión del sistema operativo */
         @media print {
-            .action-panel, .show-panel-trigger, .btn-clear-sig { display: none !important; }
+            .action-panel, .show-panel-trigger, .btn-clear-sig, #firmaInput { display: none !important; }
             .signature-canvas-wrapper { border: none !important; background: transparent !important; }
-            [contenteditable="true"]:hover, [contenteditable="true"]:focus {
-                background-color: transparent !important;
-                outline: none !important;
-            }
+            [contenteditable="true"]:hover, [contenteditable="true"]:focus { background-color: transparent !important; outline: none !important; }
         }
     </style>
 </head>
@@ -346,12 +265,13 @@
             <div class="signature-block">
                 <div style="text-align: center; font-weight: bold; font-size: 9pt; color: #1a202c;">EMISIÓN Y LOGÍSTICA</div>
                 
-                <div class="signature-canvas-wrapper">
-                    <canvas id="firmaTransportista" class="signature-canvas"></canvas>
+                <div class="signature-canvas-wrapper" id="firmaWrapper">
+                    <input type="file" id="firmaInput" accept="image/png, image/jpeg" style="font-size: 8pt; width: 80%;" onchange="cargarFirma(event)">
+                    <img id="firmaTransportistaImg" src="" style="max-width: 100%; max-height: 100%; display: none;" alt="Firma Transportista" />
                 </div>
                 
                 <div class="signature-line"></div>
-                <button class="btn-clear-sig" onclick="borrarFirma()">Borrar Firma</button>
+                <button class="btn-clear-sig" id="btnBorrarFirma" onclick="borrarFirmaImg()" style="display:none;">Quitar Firma</button>
                 <div style="font-size: 8pt; color: #718096; text-align: center; font-weight: bold;" contenteditable="true">PANROD LOGÍSTICA S.A.</div>
                 <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Firma Digitalizada / Chofer asignado</div>
             </div>
@@ -372,70 +292,36 @@
     </div>
 
     <script>
-        // --- LÓGICA DE FIRMA EN PANTALLA (CANVAS) ---
-        const canvas = document.getElementById('firmaTransportista');
-        const ctx = canvas.getContext('2d');
-        let dibujando = false;
-
-        // Ajustar el tamaño interno del canvas al tamaño real visible en pantalla
-        function ajustarCanvas() {
-            const rect = canvas.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
-            // Estilos de la línea de firma
-            ctx.strokeStyle = "#1e3a8a"; // Azul oscuro institucional
-            ctx.lineWidth = 2;
-            ctx.lineCap = "round";
-            ctx.lineJoin = "round";
+        // --- LÓGICA DE IMAGEN DE FIRMA ---
+        function cargarFirma(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById('firmaTransportistaImg');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                    
+                    document.getElementById('firmaInput').style.display = 'none';
+                    document.getElementById('btnBorrarFirma').style.display = 'inline-block';
+                    document.getElementById('firmaWrapper').style.border = 'none';
+                }
+                reader.readAsDataURL(file);
+            }
         }
 
-        // Eventos para Mouse
-        canvas.addEventListener('mousedown', (e) => {
-            dibujando = true;
-            ctx.beginPath();
-            ctx.moveTo(e.offsetX, e.offsetY);
-        });
-
-        canvas.addEventListener('mousemove', (e) => {
-            if (dibujando) {
-                ctx.lineTo(e.offsetX, e.offsetY);
-                ctx.stroke();
-            }
-        });
-
-        window.addEventListener('mouseup', () => dibujando = false);
-
-        // Eventos para Pantallas Táctiles (Celulares y Tablets)
-        canvas.addEventListener('touchstart', (e) => {
-            dibujando = true;
-            ctx.beginPath();
-            const t = e.touches[0];
-            const rect = canvas.getBoundingClientRect();
-            ctx.moveTo(t.clientX - rect.left, t.clientY - rect.top);
-            e.preventDefault();
-        }, { passive: false });
-
-        canvas.addEventListener('touchmove', (e) => {
-            if (dibujando) {
-                const t = e.touches[0];
-                const rect = canvas.getBoundingClientRect();
-                ctx.lineTo(t.clientX - rect.left, t.clientY - rect.top);
-                ctx.stroke();
-            }
-            e.preventDefault();
-        }, { passive: false });
-
-        window.addEventListener('touchend', () => dibujando = false);
-
-        // Función del botón borrar
-        function borrarFirma() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function borrarFirmaImg() {
+            const img = document.getElementById('firmaTransportistaImg');
+            img.src = '';
+            img.style.display = 'none';
+            
+            const input = document.getElementById('firmaInput');
+            input.value = '';
+            input.style.display = 'block';
+            
+            document.getElementById('btnBorrarFirma').style.display = 'none';
+            document.getElementById('firmaWrapper').style.border = '1px dashed #cbd5e0';
         }
-
-        // Inicializar canvas al cargar la página y al redimensionar
-        window.addEventListener('load', ajustarCanvas);
-        window.addEventListener('resize', ajustarCanvas);
-
 
         // --- LÓGICA DE EXPORTACIÓN Y CONTROLES ---
         function alternarPanel(visible) {
@@ -456,10 +342,49 @@
         }
 
         function exportarImagen() {
+            if (document.activeElement) { document.activeElement.blur(); }
+            
             const panel = document.getElementById('actionPanel');
             const trigger = document.getElementById('showTrigger');
             const target = document.getElementById('remitoContainer');
-            const btnClear = document.querySelector('.btn-clear-sig');
+            const btnClear = document.getElementById('btnBorrarFirma');
+            const firmaInput = document.getElementById('firmaInput');
             
+            // Guardar estados originales
             const panelOriginalDisplay = panel.style.display;
-            const triggerOriginalDisplay = 
+            const triggerOriginalDisplay = trigger.style.display;
+            const btnClearOriginalDisplay = btnClear.style.display;
+            const inputOriginalDisplay = firmaInput.style.display;
+            
+            // Ocultar elementos que no deben salir en la imagen
+            panel.style.display = 'none';
+            trigger.style.display = 'none';
+            btnClear.style.display = 'none';
+            firmaInput.style.display = 'none';
+
+            // Generar la imagen
+            html2canvas(target, { scale: 2, useCORS: true }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Remito.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                // Restaurar elementos
+                panel.style.display = panelOriginalDisplay;
+                trigger.style.display = triggerOriginalDisplay;
+                btnClear.style.display = btnClearOriginalDisplay;
+                firmaInput.style.display = inputOriginalDisplay;
+            }).catch(err => {
+                console.error("Error al exportar la imagen: ", err);
+                alert("Hubo un problema al generar la imagen. Inténtelo nuevamente.");
+                // Restaurar elementos en caso de error
+                panel.style.display = panelOriginalDisplay;
+                trigger.style.display = triggerOriginalDisplay;
+                btnClear.style.display = btnClearOriginalDisplay;
+                firmaInput.style.display = inputOriginalDisplay;
+            });
+        }
+    </script>
+</body>
+                    </html>
+                                                                                    
