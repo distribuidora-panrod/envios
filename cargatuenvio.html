@@ -583,7 +583,7 @@ border: 1px solid var(--border-color);
 <div class="form-container">
     <div class="order-form-card">
         
-        <!-- 📦 SECCIÓN DE TARIFAS OFICIALES ACTUALIZADA (SIN ÁLBUMES) -->
+        <!-- 📊 SECCIÓN DE TARIFAS OFICIALES DE CARGA -->
         <div class="rates-container">
             <div class="rates-title">📊 PANROD LOGÍSTICA - Tarifas Oficiales de Carga</div>
             
@@ -762,7 +762,7 @@ border: 1px solid var(--border-color);
                 <div class="price" id="tasa_calculada">$0</div>
                 
                 <div class="breakdown" id="desglose_calculado">
-                    • Envío Base / Regional: $0<br>
+                    • Envío Base: $0<br>
                     • Recargo Servicio Express: $0<br>
                     • Cobertura Antirrobo (Aforo 3%): $0<br>
                     • Impuesto al Valor Agregado (IVA 21%): $0
@@ -808,6 +808,12 @@ border: 1px solid var(--border-color);
 </div>
 
 <script>
+// VARIABLES LOGÍSTICAS DE CÁLCULO MUNDIAL GLBL
+let valBaseGlobal = 0;
+let valExpressGlobal = 0;
+let valSeguroGlobal = 0;
+let valIvaGlobal = 0;
+
 // Lógica Alternadora del Dark Mode
 function toggleTheme() {
     const body = document.body;
@@ -841,6 +847,7 @@ function calcularTasaLogistica() {
     const valorDeclarado = parseFloat(valorLimpio) || 0;
 
     if (!provincia) {
+        valBaseGlobal = 0; valExpressGlobal = 0; valSeguroGlobal = 0; valIvaGlobal = 0;
         document.getElementById("tasa_calculada").innerText = "$0";
         document.getElementById("desglose_calculado").innerHTML = `
             • Envío Base: $0<br>
@@ -852,28 +859,28 @@ function calcularTasaLogistica() {
     }
 
     const tipoDestino = (provincia === "buenos_aires") ? "regional" : "nacional";
-    const costoEnvioBase = matrizTarifas[rangoPeso][tipoDestino];
+    valBaseGlobal = matrizTarifas[rangoPeso][tipoDestino];
     
     // Cálculo de adicional express (25% sobre el base si corresponde)
-    const costoExpress = (prioridad === "Express") ? Math.round(costoEnvioBase * 0.25) : 0;
+    valExpressGlobal = (prioridad === "Express") ? Math.round(valBaseGlobal * 0.25) : 0;
     
     // Seguro Operativo Antirrobo / Aforo del 3%
-    const costoSeguro = (valorDeclarado > 0) ? Math.round(valorDeclarado * 0.03) : 0;
+    valSeguroGlobal = (valorDeclarado > 0) ? Math.round(valorDeclarado * 0.03) : 0;
     
     // Subtotal para aplicar IVA
-    const subtotal = costoEnvioBase + costoExpress + costoSeguro;
-    const iva = Math.round(subtotal * 0.21);
+    const subtotal = valBaseGlobal + valExpressGlobal + valSeguroGlobal;
+    valIvaGlobal = Math.round(subtotal * 0.21);
     
     // Monto Final Neto
-    const totalNeto = subtotal + iva;
+    const totalNeto = subtotal + valIvaGlobal;
 
     // Renderizado en Formulario
     document.getElementById("tasa_calculada").innerText = `$${totalNeto.toLocaleString("es-AR")}`;
     document.getElementById("desglose_calculado").innerHTML = `
-        • Envío Base (${tipoDestino.toUpperCase()}): $${costoEnvioBase.toLocaleString("es-AR")}<br>
-        • Recargo Servicio Express: $${costoExpress.toLocaleString("es-AR")}<br>
-        • Cobertura Antirrobo (Aforo 3%): $${costoSeguro.toLocaleString("es-AR")}<br>
-        • Impuesto al Valor Agregado (IVA 21%): $${iva.toLocaleString("es-AR")}
+        • Envío Base (${tipoDestino.toUpperCase()}): $${valBaseGlobal.toLocaleString("es-AR")}<br>
+        • Recargo Servicio Express: $${valExpressGlobal.toLocaleString("es-AR")}<br>
+        • Cobertura Antirrobo (Aforo 3%): $${valSeguroGlobal.toLocaleString("es-AR")}<br>
+        • Impuesto al Valor Agregado (IVA 21%): $${valIvaGlobal.toLocaleString("es-AR")}
     `;
 }
 
@@ -907,56 +914,54 @@ function procesarFormulario(event) {
 
         let valorLimpio = document.getElementById("carga_valor").value.replace(/[^0-9]/g, '');
         const valorDeclarado = parseInt(valorLimpio) || 0;
-        
         const tasaTotal = document.getElementById("tasa_calculada").innerText;
-        
-        // Formatear desglose limpio para el cuerpo de texto de WhatsApp
-        let desgloseTexto = document.getElementById("desglose_calculado").innerText;
-        desgloseTexto = desgloseTexto.replace(/\n/g, '\n');
 
-        // Estructura de salida limpia corporativa para WhatsApp
-        const mensajeWhatsApp = `Hola PANROD LOGÍSTICA.
+        // Estructura de salida limpia y estricta para WhatsApp (Enviada al 2213109897)
+        const mensajeWhatsApp = `📦 *PANROD LOGÍSTICA - NUEVA ORDEN DE DESPACHO*
+--------------------------------------------------
+🆔 *CÓDIGO DE SEGUIMIENTO:* ${trackingCode}
 
-Solicito el despacho de una nueva orden comercial con tracking asignado.
+🏭 *1. DATOS DE ORIGEN (REMITENTE):*
+• *Nombre/Razón Social:* ${remitente}
+• *Teléfono:* ${telefonoRemitente}
+• *Nodo de Despacho:* ${depositoOrigen}
 
-🆔 CÓDIGO DE SEGUIMIENTO: ${trackingCode}
+🚚 *2. DATOS DE DESTINO (RECEPCIÓN):*
+• *Destinatario:* ${receptor}
+• *DNI / Identificación:* ${dni}
+• *Dirección de Entrega:* ${direccion}
+• *Localidad:* ${localidad} (CP: ${cp})
+• *Jurisdicción / Provincia:* ${provinciaTexto}
 
-📦 DETALLES DE ORIGEN (REMITENTE):
-• Razón Social/Nombre: ${remitente}
-• Teléfono de Contacto: ${telefonoRemitente}
-• Nodo de Salida: ${depositoOrigen}
+🛍️ *3. ESPECIFICACIONES DE LA CARGA:*
+• *Contenido:* ${mercaderia}
+• *Dimensiones:* ${alto}cm x ${ancho}cm x ${largo}cm
+• *Valor Declarado:* $ ${valorDeclarado.toLocaleString("es-AR")}
 
-🚚 DETALLES DE DESTINO (RECEPCIÓN):
-• Destinatario: ${receptor} (DNI: ${dni})
-• Dirección: ${direccion}
-• Localidad: ${localidad} (CP: ${cp})
-• Jurisdicción: ${provinciaTexto}
+⚙️ *4. CONFIGURACIÓN DE OPERACIÓN:*
+• *Modalidad de Distribución:* ${prioridad}
+• *Canal de Facturación:* ${pago}
+• *Ventana Horaria:* ${horario}
+• *Observaciones:* ${notas ? notas : 'Ninguna'}
 
-🛍️ ESPECIFICACIONES DE CARGA Y VALUACIÓN:
-• Contenido Declarado: ${mercaderia}
-• Dimensiones Físicas: ${alto}cm x ${ancho}cm x ${largo}cm
-• Costo Nominal de Carga: $ ${valorDeclarado.toLocaleString("es-AR")}
+💰 *5. DESGLOSE DE LIQUIDACIÓN:*
+• Envío Base: $ ${valBaseGlobal.toLocaleString("es-AR")}
+• Recargo Express: $ ${valExpressGlobal.toLocaleString("es-AR")}
+• Cobertura Antirrobo (Aforo 3%): $ ${valSeguroGlobal.toLocaleString("es-AR")}
+• Impuesto Tributario (IVA 21%): $ ${valIvaGlobal.toLocaleString("es-AR")}
+--------------------------------------------------
+💵 *IMPORTE TOTAL NETO:* ${tasaTotal}
 
-⚙️ CONFIGURACIÓN DE OPERACIÓN INTERNA:
-• Modalidad de Distribución: ${prioridad}
-• Canal de Facturación: ${pago}
-• Ventana de Entrega: ${horario}
-• Nota Domiciliaria: ${notas ? notas : 'Ninguna'}
-
-💰 DESGLOSE TOTAL DE LIQUIDACIÓN Y AUDITORÍA:
-${desgloseTexto}
----------------------------------------------
-💵 IMPORTE TOTAL NETO A DEPOSITAR: ${tasaTotal}
-
-Quedo en espera de la inspección de peso en planta y los datos de acreditación bancaria para la activación inmediata de la guía troncal.`;
+_Solicitud automatizada sujeta a auditoría técnica y pesaje físico en planta central._`;
 
         document.getElementById("loadingModal").style.display = "none";
         
-        const urlDestino = 'https://wa.me/5491131803790?text=' + encodeURIComponent(mensajeWhatsApp);
+        // Redirección directa al número especificado por el usuario
+        const urlDestino = 'https://wa.me/549213109897?text=' + encodeURIComponent(mensajeWhatsApp);
         window.open(urlDestino, '_blank');
 
     }, 1500);
 }
 </script>
 </body>
-    </html>
+                        </html>
