@@ -434,11 +434,15 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
                 </div>
                 <div class="form-group">
                     <label for="destino_localidad">Localidad</label>
-                    <input type="text" id="destino_localidad" placeholder="Ej: Villa Lugano" required>
+                    <input type="text" id="destino_localidad" placeholder="Ej: Villa de Mayo" required>
                 </div>
-                <div class="form-group span-2">
-                    <label for="destino_direccion">Dirección Exacta de Entrega (Altura, Mza, Casa, CP)</label>
-                    <input type="text" id="destino_direccion" placeholder="Ej: Rodolfo Scapino Mza 3 - Casa 8 (CP1439)" required>
+                <div class="form-group">
+                    <label for="destino_direccion">Dirección de Entrega (Calle y Altura)</label>
+                    <input type="text" id="destino_direccion" placeholder="Ej: Av. Rivadavia 4520" required>
+                </div>
+                <div class="form-group">
+                    <label for="destino_cp">Código Postal (CP)</label>
+                    <input type="text" id="destino_cp" placeholder="Ej: 1406" required>
                 </div>
             </div>
 
@@ -451,7 +455,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
                 </div>
                 <div class="form-group">
                     <label for="carga_valor">Valor Declarado de la Mercadería ($)</label>
-                    <input type="number" id="carga_valor" placeholder="Ej: 155000" min="0" oninput="calcularTasaLogistica()" required>
+                    <input type="text" id="carga_valor" placeholder="Ej: 155.000" oninput="calcularTasaLogistica()" required>
                 </div>
                 <div class="form-group">
                     <label for="carga_peso">Volumen / Peso Estimado</label>
@@ -523,7 +527,10 @@ const matrizTarifas = {
 function calcularTasaLogistica() {
     const provincia = document.getElementById("destino_provincia").value;
     const rangoPeso = document.getElementById("carga_peso").value;
-    const valorDeclarado = parseFloat(document.getElementById("carga_valor").value) || 0;
+    
+    // Limpieza de caracteres no numéricos en el input por si ponen puntos o signos de pesos
+    let valorLimpio = document.getElementById("carga_valor").value.replace(/[^0-9]/g, '');
+    const valorDeclarado = parseFloat(valorLimpio) || 0;
 
     if (!provincia) {
         document.getElementById("tasa_calculada").innerText = "$0";
@@ -531,14 +538,14 @@ function calcularTasaLogistica() {
         return;
     }
 
-    // Identificar si es envío Regional (dentro de Buenos Aires) o Nacional (cualquier otra)
+    // Identificar si es envío Regional o Nacional
     const tipoDestino = (provincia === "buenos_aires") ? "regional" : "nacional";
 
     // Obtener costo de envío base
     const costoEnvioBase = matrizTarifas[rangoPeso][tipoDestino];
 
-    // Calcular el aforo del 3% correspondiente al Seguro Operativo
-    const costoSeguro = Math.round(valorDeclarado * 0.03);
+    // Calcular el aforo del 3% correspondiente al Seguro Operativo (Validado)
+    const costoSeguro = (valorDeclarado > 0) ? Math.round(valorDeclarado * 0.03) : 0;
 
     // Sumatoria total de tasas integrales
     const totalNeto = costoEnvioBase + costoSeguro;
@@ -562,8 +569,12 @@ function procesarFormulario(event) {
         const dni = document.getElementById("destino_dni").value;
         const direccion = document.getElementById("destino_direccion").value;
         const localidad = document.getElementById("destino_localidad").value;
+        const cp = document.getElementById("destino_cp").value;
         const mercaderia = document.getElementById("carga_detalle").value;
-        const valorDeclarado = document.getElementById("carga_valor").value;
+        
+        let valorLimpio = document.getElementById("carga_valor").value.replace(/[^0-9]/g, '');
+        const valorDeclarado = parseInt(valorLimpio) || 0;
+        
         const tasaTotal = document.getElementById("tasa_calculada").innerText;
         const desglose = document.getElementById("desglose_calculado").innerText;
 
@@ -578,11 +589,11 @@ Remitente: ${remitente}
 🚚 DETALLES DE DESTINO:
 Destinatario: ${receptor} (DNI: ${dni})
 Dirección: ${direccion}
-Localidad: ${localidad}
+Localidad: ${localidad} (CP: ${cp})
 
 🛍️ INFORMACIÓN DE CARGA:
 Contenido: ${mercaderia}
-Valor Declarado: $ ${parseInt(valorDeclarado).toLocaleString("es-AR")}
+Valor Declarado: $ ${valorDeclarado.toLocaleString("es-AR")}
 Tasas Logísticas Calculadas: ${tasaTotal}
 (${desglose})
 
@@ -597,5 +608,5 @@ Quedo a la espera de la asignación del código de seguimiento PR oficial y los 
 }
 </script>
 </body>
-                            </html>
+                                                                                       </html>
                                 
