@@ -21,6 +21,7 @@ background:#f0f4f8;
 color:#1e293b;
 overflow-x: hidden;
 position: relative;
+transition: background 0.3s, color 0.3s;
 }
 
 /* 🏆 CINTA DE LA SELECCIÓN ARGENTINA CON 3 ESTRELLAS */
@@ -175,6 +176,7 @@ padding: 8px;
 border-radius: 50px;
 box-shadow: 0 15px 35px rgba(15, 23, 42, 0.1);
 border: 1px solid #e2e8f0;
+transition: background 0.3s, border 0.3s;
 }
 
 .search-box input{
@@ -186,6 +188,7 @@ font-size:16px;
 outline: none;
 color: #0f172a;
 background: #f8fafc;
+transition: background 0.3s, color 0.3s;
 }
 
 .search-box button{
@@ -278,6 +281,7 @@ max-height:85vh;
 overflow:auto;
 box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
 animation:fade .4s cubic-bezier(0.16, 1, 0.3, 1);
+transition: background 0.3s;
 }
 
 @keyframes fade{
@@ -327,6 +331,7 @@ padding:12px 16px;
 border-radius: 12px;
 border: 1px solid #f1f5f9;
 position: relative;
+transition: background 0.3s, border 0.3s;
 }
 
 .box strong{
@@ -344,7 +349,6 @@ font-weight: 500;
 font-size: 14px;
 }
 
-/* Modificadores para botones dentro de las cajas de datos */
 .box button {
 position: absolute;
 right: 10px;
@@ -371,6 +375,7 @@ border: 1px solid #bbf7d0;
 border-radius: 16px;
 padding: 20px;
 margin-bottom: 25px;
+transition: background 0.3s, border 0.3s;
 }
 
 .checkout-box.pending {
@@ -456,6 +461,7 @@ flex-direction: column;
 align-items: center;
 justify-content: center;
 text-align: center;
+transition: background 0.3s, border 0.3s;
 }
 
 .modal h3 {
@@ -609,53 +615,6 @@ font-size: 12px;
 color: #64748b;
 }
 
-/* 📱 SECCIÓN RESPONSIVE OPTIMIZADA */
-@media(max-width: 700px){
-    header { 
-        padding: 50px 20px 90px 20px; 
-    }
-    .logo { 
-        font-size: 38px; 
-        letter-spacing: 3px;
-    }
-    .sub { 
-        font-size: 12px; 
-        letter-spacing: 1.5px;
-        line-height: 1.4;
-    }
-    .search-box { 
-        flex-direction: column; 
-        padding: 10px; 
-        border-radius: 20px; 
-        background: transparent; 
-        box-shadow: none; 
-        border: none;
-    }
-    .search-box input { 
-        background: white; 
-        border: 1px solid #e2e8f0; 
-        border-radius: 30px; 
-        margin-bottom: 8px; 
-        padding: 14px 20px;
-    }
-    .search-box button { 
-        width: 100%; 
-        border-radius: 30px;
-        padding: 14px;
-    }
-    .tracking-grid { 
-        grid-template-columns: 1fr; 
-    }
-    footer { 
-        text-align: center; 
-        border-radius: 0; 
-    }
-    .footer-content { 
-        text-align: center; 
-        gap: 25px;
-    }
-}
-
 .process{
 padding:70px 20px;
 text-align:center;
@@ -680,6 +639,7 @@ padding:20px;
 border-radius:15px;
 min-width:220px;
 box-shadow:0 10px 25px rgba(0,0,0,.04);
+transition: background 0.3s, border 0.3s;
 }
 
 .payment-method{
@@ -723,6 +683,7 @@ min-width:220px;
 border-radius:18px;
 text-align:center;
 box-shadow:0 8px 25px rgba(0,0,0,.05);
+transition: background 0.3s, border 0.3s;
 }
 
 .stat-card h3{
@@ -753,6 +714,7 @@ font-size:13px;
 font-weight:600;
 color:#334155;
 box-shadow:0 4px 12px rgba(0,0,0,.04);
+transition: background 0.3s, border 0.3s, color 0.3s;
 }
 
 .section-divider{
@@ -784,9 +746,7 @@ color:#0284c7;
   height: 50px;
   border: 5px solid #e2e8f0;
   border-radius: 50%;
-  /* En vez de animar el borde, usamos una máscara o recortamos */
   border-right-color: #0284c7; 
-  /* transform: rotate no genera Reflow en el navegador */
   animation: spinEficiente 0.8s linear infinite;
 }
 
@@ -795,19 +755,123 @@ color:#0284c7;
   to { transform: rotate(360deg); }
 }
 
+/* 🌙 ESTILOS DARK MODE */
+body.dark-mode {
+    background: #0f172a;
+    color: #f8fafc;
+}
+body.dark-mode header {
+    background: linear-gradient(135deg, rgba(2, 6, 23, 0.96), rgba(8, 47, 73, 0.95)), 
+                url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=1950&q=80');
+}
+body.dark-mode .card, body.dark-mode .stat-card, body.dark-mode .process-steps div, body.dark-mode .modal-content, body.dark-mode .search-box {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+body.dark-mode .search-box input {
+    background: #0f172a;
+    color: #f8fafc;
+}
+body.dark-mode .box, body.dark-mode .delivery-sidebar {
+    background: #0f172a;
+    border-color: #334155;
+}
+body.dark-mode .box span.val, body.dark-mode .modal h2, body.dark-mode .modal h3, body.dark-mode .step.is-active h4, body.dark-mode .process h2 {
+    color: #f8fafc;
+}
+body.dark-mode .checkout-box { background: #064e3b; border-color: #047857; }
+body.dark-mode .checkout-box.pending { background: #78350f; border-color: #b45309; }
+body.dark-mode .price-detail p, body.dark-mode .price-detail .total { color: #e2e8f0; }
+body.dark-mode .price-detail p span, body.dark-mode .price-detail .total span { color: #f8fafc; }
+body.dark-mode .checkout-box.pending .price-detail .total span { color: #fb923c; }
+body.dark-mode .legal-notice { background: rgba(0,0,0,0.3); color: #cbd5e1; border-color: #334155; }
+body.dark-mode .badge-item { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+body.dark-mode .card p, body.dark-mode .stat-card p { color: #94a3b8; }
+body.dark-mode .close:hover { color: #f8fafc; }
+
+/* 🌟 BOTONES FLOTANTES (COTIZAR & DARK MODE) */
+.floating-container {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 1000;
+}
+
+.btn-floating {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: white;
+    border: none;
+    padding: 15px 22px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    transition: .3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.btn-floating:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    background: linear-gradient(135deg, #0369a1, #075985);
+}
+
+.btn-dark-toggle {
+    background: #1e293b;
+    padding: 15px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    justify-content: center;
+    align-self: flex-end;
+}
+
+.btn-dark-toggle:hover { background: #0f172a; }
+body.dark-mode .btn-dark-toggle { background: #f8fafc; color: #0f172a; }
+
+/* RESPONSIVE */
+@media(max-width: 700px){
+    header { padding: 50px 20px 90px 20px; }
+    .logo { font-size: 38px; letter-spacing: 3px; }
+    .sub { font-size: 12px; letter-spacing: 1.5px; line-height: 1.4; }
+    .search-box { flex-direction: column; padding: 10px; border-radius: 20px; background: transparent; box-shadow: none; border: none; }
+    .search-box input { background: white; border: 1px solid #e2e8f0; border-radius: 30px; margin-bottom: 8px; padding: 14px 20px; }
+    body.dark-mode .search-box input { background: #1e293b; border-color: #334155; }
+    .search-box button { width: 100%; border-radius: 30px; padding: 14px; }
+    .tracking-grid { grid-template-columns: 1fr; }
+    footer { text-align: center; border-radius: 0; }
+    .footer-content { text-align: center; gap: 25px; }
+    .floating-container { bottom: 20px; right: 20px; }
+}
 </style>
 </head>
 <body>
 
-<!-- 🏆 CINTA ESQUINERA SELECCIÓN ARGENTINA DE 3 ESTRELLAS -->
 <div class="afa-ribbon">
     <div class="afa-ribbon-content">
          <span class="stars">⭐⭐⭐</span>
     </div>
 </div>
 
+<div class="floating-container">
+    <a href="cotizar-envio.html" class="btn-floating">
+        📦 Solicitar un Envío
+    </a>
+    
+    <button id="darkModeToggle" class="btn-floating btn-dark-toggle" title="Activar Modo Oscuro">
+        🌙
+    </button>
+</div>
+
 <header>
-    <!-- Imagen del isotipo central -->
     <img src="https://i.postimg.cc/wBnc5kQf/1000019370.png" alt="Logo Panrod" class="brand-logo-img">
     
     <div class="logo">PANROD LOGÍSTICA</div>
@@ -870,7 +934,7 @@ color:#0284c7;
         <p>El sistema calcula las tasas logísticas obligatorias de forma transparente según destino, peso y volumen. Una vez consolidadas las obligaciones comerciales y operativas, se emite de forma automática el pase de distribución permanente.</p>
     </div>
     <div class="card">
-        <h3>🚚 Despacho eitnerario</h3>
+        <h3>🚚 Despacho itinerario</h3>
         <p>Con la confirmación contable en sistema, las unidades de transporte liberan la carga. El cliente obtiene acceso a alertas satelitales en tiempo real y claves dinámicas para una recepción blindada en puerta.</p>
     </div>
 </section>
@@ -939,7 +1003,7 @@ color:#0284c7;
     <div class="footer-bottom">
         <div>© 2026 PANROD Logística Nacional</div>
         <div>Todos los derechos reservados</div>
-        <div>🇦🇷 Proveedor Logístico Oficial de la Selección Argentina 🇦🇷</div>
+        <div>🇦🇷Proveedor Logístico Oficial de la Selección Argentina 🇦🇷</div>
     </div>
 </footer>
 
@@ -986,7 +1050,7 @@ color:#0284c7;
 
 <div class="modal" id="loadingModal">
     <div class="modal-content" style="max-width:300px;text-align:center;">
-        <div class="loader"></div>
+        <div class="loader-eficiente" style="margin: 0 auto;"></div>
         <h3 style="margin-top:15px;">Buscando información...</h3>
         <p style="font-size:13px;color:#64748b;">
             Consultando base de datos logística.
@@ -995,6 +1059,31 @@ color:#0284c7;
 </div>
 
 <script>
+// --- LÓGICA DEL DARK MODE (NUEVA) ---
+const darkModeToggle = document.getElementById('darkModeToggle');
+const body = document.body;
+
+// Chequea si el usuario ya tenía el modo oscuro guardado en su navegador
+if(localStorage.getItem('panrodDarkMode') === 'enabled') {
+    body.classList.add('dark-mode');
+    darkModeToggle.innerHTML = '☀️';
+    darkModeToggle.title = "Desactivar Modo Oscuro";
+}
+
+darkModeToggle.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    if(body.classList.contains('dark-mode')){
+        localStorage.setItem('panrodDarkMode', 'enabled');
+        darkModeToggle.innerHTML = '☀️';
+        darkModeToggle.title = "Desactivar Modo Oscuro";
+    } else {
+        localStorage.setItem('panrodDarkMode', 'disabled');
+        darkModeToggle.innerHTML = '🌙';
+        darkModeToggle.title = "Activar Modo Oscuro";
+    }
+});
+// -------------------------------------
+
 // 1. BASE DE DATOS CONFIGURABLE (SISTEMA DE PRECIOS LOGÍSTICOS)
 const envios = {
     "PR-BDG-40526": {
@@ -1048,10 +1137,6 @@ function cerrarPago() {
     document.getElementById("modalPago").style.display = "none";
 }
 
-/**
- * Compila de forma dinámica los precios y datos comerciales del pedido
- * actual y ejecuta la redirección formal a la API de WhatsApp.
- */
 function enReportePagoLogistica() {
     const codigoInput = inputCodigo.value.trim().toUpperCase();
     const envio = envios[codigoInput];
@@ -1063,7 +1148,6 @@ function enReportePagoLogistica() {
 
     const totalAbonar = envio.precioProducto + envio.precioEnvio;
 
-    // Plantilla formal solicitada para la validación del depósito
     const mensajeWhatsApp = `Hola PANROD LOGÍSTICA.
 
 Deseo informar una transferencia para iniciar el proceso de distribución de mi pedido.
@@ -1255,7 +1339,6 @@ function copiarTexto(id) {
     
     const text = elemento.innerText;
     navigator.clipboard.writeText(text).then(() => {
-        // Obtenemos el botón correcto que disparó el evento dentro del modal o la caja
         const btn = event.target;
         const original = btn.innerHTML;
         btn.innerHTML = "✅ Copiado";
@@ -1266,4 +1349,4 @@ function copiarTexto(id) {
 }
 </script>
 </body>
-</html>
+                    </html>
