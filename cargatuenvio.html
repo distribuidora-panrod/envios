@@ -218,10 +218,11 @@ color: #15803d;
 font-family: 'Montserrat', sans-serif;
 }
 
-.live-quote-box .price span {
-font-size: 16px;
-font-weight: 500;
+.live-quote-box .breakdown {
+font-size: 12px;
 color: #166534;
+margin-top: 5px;
+font-weight: 500;
 }
 
 /* BOTONES */
@@ -423,12 +424,12 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
                     <label for="destino_provincia">Provincia de Destino</label>
                     <select id="destino_provincia" onchange="calcularTasaLogistica()" required>
                         <option value="">Seleccione una provincia...</option>
-                        <option value="buenos_aires">Buenos Aires / CABA</option>
-                        <option value="santa_fe">Santa Fe</option>
-                        <option value="cordoba">Córdoba</option>
-                        <option value="mendoza">Mendoza</option>
-                        <option value="entre_rios">Entre Ríos</option>
-                        <option value="otras">Otras Provincias (Interior)</option>
+                        <option value="buenos_aires">Buenos Aires / CABA (Regional)</option>
+                        <option value="santa_fe">Santa Fe (Nacional)</option>
+                        <option value="cordoba">Córdoba (Nacional)</option>
+                        <option value="mendoza">Mendoza (Nacional)</option>
+                        <option value="entre_rios">Entre Ríos (Nacional)</option>
+                        <option value="otras">Otras Provincias (Nacional)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -446,18 +447,20 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
             <div class="form-grid">
                 <div class="form-group span-2">
                     <label for="carga_detalle">Contenido Detallado del Envío</label>
-                    <textarea id="carga_detalle" placeholder="Ej: Combo Platino - Medio Lote / 6 Cajas de 50 Unidades (Álbumes y Figuritas)" required></textarea>
+                    <textarea id="carga_detalle" placeholder="Ej: Combo Platino - Medio Lote / 6 Cajas de 50 Unidades (Insumos y documentación comercial)" required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="carga_valor">Valor Declarado de la Mercadería ($)</label>
-                    <input type="number" id="carga_valor" placeholder="Ej: 155000" min="1" required>
+                    <input type="number" id="carga_valor" placeholder="Ej: 155000" min="0" oninput="calcularTasaLogistica()" required>
                 </div>
                 <div class="form-group">
                     <label for="carga_peso">Volumen / Peso Estimado</label>
-                    <select id="carga_peso" required>
-                        <option value="chico">Caja Chica (Hasta 5kg)</option>
-                        <option value="mediano">Lote Mediano (5kg a 15kg)</option>
-                        <option value="grande">Pallet / Lote Mayorista (+15kg)</option>
+                    <select id="carga_peso" onchange="calcularTasaLogistica()" required>
+                        <option value="chica">📦 Caja Chica / Lote Menor (Hasta 5 kg)</option>
+                        <option value="mediana_10">📦 Lote Mediano (De 5 kg a 10 kg)</option>
+                        <option value="mediana_15">📦 Lote Mediano (De 10 kg a 15 kg)</option>
+                        <option value="mayorista_20">📦 Lote Mayorista (Hasta 20 kg)</option>
+                        <option value="mayorista_25">📦 Lote Mayorista (Hasta 25 kg)</option>
                     </select>
                 </div>
             </div>
@@ -465,8 +468,9 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
             <!-- COTIZADOR EN TIEMPO REAL -->
             <div class="live-quote-box">
                 <h4>Tasas Integrales de Envío y Seguro de Tránsito</h4>
-                <div class="price" id="tasa_calculada">$0.00</div>
-                <p style="font-size: 11px; color: #166534; margin-top: 5px;">*Cálculo automatizado sujeto a revisión técnica de acopio.</p>
+                <div class="price" id="tasa_calculada">$0</div>
+                <div class="breakdown" id="desglose_calculado">Envío Base: $0 | Seguro Operativo (3%): $0</div>
+                <p style="font-size: 11px; color: #166534; margin-top: 8px;">*Cálculo automatizado sujeto a revisión técnica de acopio.</p>
             </div>
 
             <!-- BOTÓN DE ACCIÓN ACCIONABLE -->
@@ -507,34 +511,41 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
 </div>
 
 <script>
-// Lógica de cálculo dinámico simulado tal como opera el sistema de tasas de PANROD
+// Matriz indexada con los costos provistos
+const matrizTarifas = {
+    "chica": { regional: 21800, nacional: 30200 },
+    "mediana_10": { regional: 29300, nacional: 42600 },
+    "mediana_15": { regional: 36000, nacional: 53400 },
+    "mayorista_20": { regional: 42500, nacional: 62100 },
+    "mayorista_25": { regional: 51100, nacional: 76300 }
+};
+
 function calcularTasaLogistica() {
     const provincia = document.getElementById("destino_provincia").value;
-    let costo = 0;
+    const rangoPeso = document.getElementById("carga_peso").value;
+    const valorDeclarado = parseFloat(document.getElementById("carga_valor").value) || 0;
 
-    switch(provincia) {
-        case "buenos_aires":
-            costo = 18000;
-            break;
-        case "santa_fe":
-        case "cordoba":
-        case "entre_rios":
-            costo = 24500;
-            break;
-        case "mendoza":
-        case "otras":
-            costo = 35000;
-            break;
-        default:
-            costo = 0;
+    if (!provincia) {
+        document.getElementById("tasa_calculada").innerText = "$0";
+        document.getElementById("desglose_calculado").innerText = "Envío Base: $0 | Seguro Operativo (3%): $0";
+        return;
     }
 
-    const tasaElemento = document.getElementById("tasa_calculada");
-    if(costo > 0) {
-        tasaElemento.innerText = `$${costo.toLocaleString("es-AR")}`;
-    } else {
-        tasaElemento.innerText = "$0.00";
-    }
+    // Identificar si es envío Regional (dentro de Buenos Aires) o Nacional (cualquier otra)
+    const tipoDestino = (provincia === "buenos_aires") ? "regional" : "nacional";
+
+    // Obtener costo de envío base
+    const costoEnvioBase = matrizTarifas[rangoPeso][tipoDestino];
+
+    // Calcular el aforo del 3% correspondiente al Seguro Operativo
+    const costoSeguro = Math.round(valorDeclarado * 0.03);
+
+    // Sumatoria total de tasas integrales
+    const totalNeto = costoEnvioBase + costoSeguro;
+
+    // Actualizar elementos visuales en pantalla
+    document.getElementById("tasa_calculada").innerText = `$${totalNeto.toLocaleString("es-AR")}`;
+    document.getElementById("desglose_calculado").innerText = `Envío Base: $${costoEnvioBase.toLocaleString("es-AR")} | Seguro Operativo (3%): $${costoSeguro.toLocaleString("es-AR")}`;
 }
 
 // Procesamiento y redirección automática por WhatsApp
@@ -554,6 +565,7 @@ function procesarFormulario(event) {
         const mercaderia = document.getElementById("carga_detalle").value;
         const valorDeclarado = document.getElementById("carga_valor").value;
         const tasaTotal = document.getElementById("tasa_calculada").innerText;
+        const desglose = document.getElementById("desglose_calculado").innerText;
 
         // Construcción de la plantilla estructurada para el centro operativo
         const mensajeWhatsApp = `Hola PANROD LOGÍSTICA.
@@ -572,6 +584,7 @@ Localidad: ${localidad}
 Contenido: ${mercaderia}
 Valor Declarado: $ ${parseInt(valorDeclarado).toLocaleString("es-AR")}
 Tasas Logísticas Calculadas: ${tasaTotal}
+(${desglose})
 
 Quedo a la espera de la asignación del código de seguimiento PR oficial y los datos de la cuenta central para la activación.`;
 
@@ -584,5 +597,5 @@ Quedo a la espera de la asignación del código de seguimiento PR oficial y los 
 }
 </script>
 </body>
-                      </html>
-  
+                            </html>
+                                
