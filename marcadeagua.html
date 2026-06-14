@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creador de Marca de Agua Dinámico</title>
+    <title>Creador de Marca de Agua Dinámico & Cotizador PANROD</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -22,7 +22,7 @@
 
         .controls {
             background: white;
-            padding: 15px;
+            padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             margin-bottom: 20px;
@@ -31,7 +31,7 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
 
         input[type="file"] {
@@ -59,13 +59,76 @@
             display: none; 
         }
 
-        .slider-container {
+        .slider-container, .form-group {
             display: flex;
             flex-direction: column;
             gap: 5px;
             font-weight: bold;
             color: #555;
             font-size: 14px;
+        }
+
+        .form-group select, .form-group input {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            background: #f8fafc;
+        }
+
+        /* Bloque de Tarifas de Referencia */
+        .rates-info {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.5;
+        }
+
+        .rates-info h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #0f172a;
+            font-size: 14px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 4px;
+        }
+
+        .rates-info ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+
+        /* Panel de Cotización Dinámica */
+        .quote-box {
+            background-color: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .quote-box h4 {
+            margin: 0 0 8px 0;
+            color: #166534;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quote-box .total-price {
+            font-size: 26px;
+            font-weight: bold;
+            color: #15803d;
+        }
+
+        .quote-box .breakdown {
+            font-size: 11px;
+            color: #166534;
+            margin-top: 6px;
         }
 
         /* Contenedor del lienzo/preview */
@@ -93,9 +156,7 @@
             transform: translate(-50%, -50%);
             width: 50%; 
             pointer-events: none; 
-            display: none; /* Se muestra solo cuando se carga el logo */
-            
-            /* Efectos de fusión iniciales */
+            display: none; 
             opacity: 0.5; 
             mix-blend-mode: screen; 
         }
@@ -115,6 +176,55 @@
         <div class="slider-container">
             <label for="opacitySlider">Transparencia de Fusión:</label>
             <input type="range" id="opacitySlider" min="0" max="1" step="0.05" value="0.5">
+        </div>
+
+        <div class="rates-info">
+            <h3>PANROD LOGÍSTICA - Tarifas Oficiales</h3>
+            <strong>📦 1. Caja Chica / Lote Menor (Hasta 5 kg)</strong><br>
+            Ideal para combos pequeños o álbumes sueltos.<br>
+            • Regional: $21.800 | • Nacional: $30.200<br><br>
+            
+            <strong>📦 2. Lote Mediano (De 5 kg a 15 kg)</strong><br>
+            Abarca cajas medianas consolidadas o packs de distribución estándar.<br>
+            • De 5 kg a 10 kg → Regional: $29.300 | Nacional: $42.600<br>
+            • De 10 kg a 15 kg → Regional: $36.000 | Nacional: $53.400<br><br>
+            
+            <strong>📦 3. Lote Mayorista / Pallet (+15 kg hasta 25 kg)</strong><br>
+            Pensado para cajas máster de distribución, bultos pesados de imprenta o el stock completo de reventa.<br>
+            • Regional: $42.500 (Hasta 20 kg) | $51.100 (Hasta 25 kg)<br>
+            • Nacional: $62.100 (Hasta 20 kg) | $76.300 (Hasta 25 kg)<br><br>
+            
+            <small style="color: #64748b;">💡 <strong>Seguro Operativo:</strong> Para bultos de alto valor se aplica un aforo del 3% sobre el costo declarado de la mercadería para blindar el paquete ante cualquier siniestro o pérdida en el tránsito troncal.</small>
+        </div>
+
+        <div class="form-group">
+            <label for="selectPeso">Tipo de Caja / Peso:</label>
+            <select id="selectPeso" onchange="calcularTotales()">
+                <option value="chica">Caja Chica / Lote Menor (Hasta 5 kg)</option>
+                <option value="mediana_10">Lote Mediano (De 5 kg a 10 kg)</option>
+                <option value="mediana_15">Lote Mediano (De 10 kg a 15 kg)</option>
+                <option value="mayorista_20">Lote Mayorista (Hasta 20 kg)</option>
+                <option value="mayorista_25">Lote Mayorista (Hasta 25 kg)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="selectDestino">Destino del Despacho:</label>
+            <select id="selectDestino" onchange="calcularTotales()">
+                <option value="regional">Regional (Misma Provincia/Zona)</option>
+                <option value="nacional">Nacional (Resto del País)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="inputValor">Valor Declarado de la Carga ($):</label>
+            <input type="number" id="inputValor" placeholder="Ej: 150000" min="0" oninput="calcularTotales()">
+        </div>
+
+        <div class="quote-box">
+            <h4>Tasas Integrales de Envío y Seguro de Tránsito</h4>
+            <div class="total-price" id="precioTotal">$21.800</div>
+            <div class="breakdown" id="desgloseCostos">Envío: $21.800 | Seguro Operativo (3%): $0</div>
         </div>
 
         <button id="downloadBtn" class="btn btn-download">⬇️ Descargar Combinada</button>
@@ -137,6 +247,34 @@
         const opacitySlider = document.getElementById('opacitySlider');
         const canvas = document.getElementById('mainCanvas');
         const ctx = canvas.getContext('2d');
+
+        // Matriz de precios lógicos indexados
+        const tarifas = {
+            "chica": { regional: 21800, nacional: 30200 },
+            "mediana_10": { regional: 29300, nacional: 42600 },
+            "mediana_15": { regional: 36000, nacional: 53400 },
+            "mayorista_20": { regional: 42500, nacional: 62100 },
+            "mayorista_25": { regional: 51100, nacional: 76300 }
+        };
+
+        function calcularTotales() {
+            const peso = document.getElementById('selectPeso').value;
+            const destino = document.getElementById('selectDestino').value;
+            const valorDeclarado = parseFloat(document.getElementById('inputValor').value) || 0;
+
+            // Obtener costo de envío base según las opciones elegidas
+            const costoEnvioBase = tarifas[peso][destino];
+
+            // Calcular el aforo del 3% del seguro operativo
+            const costoSeguro = Math.round(valorDeclarado * 0.03);
+
+            // Suma final de tasas integrales
+            const totalNeto = costoEnvioBase + costoSeguro;
+
+            // Actualizar interfaz visual
+            document.getElementById('precioTotal').innerText = `$${totalNeto.toLocaleString('es-AR')}`;
+            document.getElementById('desgloseCostos').innerText = `Envío Base: $${costoEnvioBase.toLocaleString('es-AR')} | Seguro Operativo (3%): $${costoSeguro.toLocaleString('es-AR')}`;
+        }
 
         // Objetos de imagen en memoria para el Canvas
         let baseImgLoaded = false;
@@ -195,36 +333,26 @@
         downloadBtn.addEventListener('click', function() {
             if (!baseImgLoaded) return;
 
-            // Dimensiones nativas de la imagen de fondo
             canvas.width = userImage.naturalWidth;
             canvas.height = userImage.naturalHeight;
 
-            // Dibujar fondo limpio
             ctx.drawImage(userImage, 0, 0);
 
-            // Si el usuario cargó un logo, lo procesamos y fusionamos centrado
             if (logoImgLoaded) {
-                // Definimos que ocupe el 50% del ancho del fondo
                 const logoWidth = canvas.width * 0.5;
                 const logoHeight = (watermarkImg.naturalHeight / watermarkImg.naturalWidth) * logoWidth;
                 
-                // Centrado exacto
                 const x = (canvas.width - logoWidth) / 2;
                 const y = (canvas.height - logoHeight) / 2;
 
                 ctx.save();
-                // Aplicamos el valor del slider de opacidad
                 ctx.globalAlpha = opacitySlider.value; 
-                
-                // 'screen' mantiene lo claro y oculta los fondos oscuros/negros del logo.
-                // Si preferís superposición estándar con transparencias PNG nativas, cambiá a 'source-over'.
                 ctx.globalCompositeOperation = 'screen'; 
                 
                 ctx.drawImage(watermarkImg, x, y, logoWidth, logoHeight);
                 ctx.restore();
             }
 
-            // Descarga automática del archivo resultante
             const link = document.createElement('a');
             link.download = 'imagen_fusionada.png';
             link.href = canvas.toDataURL('image/png');
