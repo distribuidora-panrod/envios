@@ -6,30 +6,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        @page { size: A4; margin: 15mm 12mm; }
+        @page { size: A4; margin: 10mm 12mm; }
         *, *::before, *::after { box-sizing: border-box; }
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; color: #2d3748; background-color: #ffffff; font-size: 10pt; line-height: 1.4; padding-bottom: 80px; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; color: #2d3748; background-color: #ffffff; font-size: 9.5pt; line-height: 1.4; padding-bottom: 80px; }
         .printable-content { background-color: #ffffff; padding: 5px; }
-        .invoice-box { border: 1px solid #1a202c; position: relative; margin-bottom: 20px; }
+        .invoice-box { border: 1px solid #1a202c; position: relative; margin-bottom: 15px; }
+        
+        /* Tipo de Documento en el centro */
         .letter-badge { position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-left: 1px solid #1a202c; border-right: 1px solid #1a202c; border-bottom: 1px solid #1a202c; width: 45px; height: 45px; text-align: center; background: #ffffff; z-index: 10; }
         .letter-badge .letter { font-size: 22pt; font-weight: 800; line-height: 42px; display: block; }
-        .letter-badge .sub-letter { font-size: 6pt; display: block; margin-top: -5px; color: #4a5568; }
+        .letter-badge .sub-letter { font-size: 5pt; display: block; margin-top: -5px; color: #4a5568; font-weight: bold; }
+        
         .header-table { width: 100%; border-collapse: collapse; }
-        .header-table td { width: 50%; padding: 20px; vertical-align: top; }
+        .header-table td { width: 50%; padding: 15px; vertical-align: top; }
         .left-header { border-right: 1px solid #1a202c; }
-        .company-title { font-size: 16pt; font-weight: 800; color: #1a202c; margin: 0 0 5px 0; }
-        .company-subtitle { font-size: 9pt; text-transform: uppercase; color: #4a5568; font-weight: bold; margin-bottom: 10px; }
-        .document-title { font-size: 20pt; font-weight: 800; letter-spacing: 2px; margin: 0 0 10px 0; color: #1a202c; text-align: right; }
-        .tracking-banner { background-color: #1a202c; color: #ffffff; padding: 12px 20px; margin-bottom: 20px; border-radius: 2px; }
-        .info-grid { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
-        .info-block { width: 50%; border: 1px solid #cbd5e0; padding: 15px; vertical-align: top; }
-        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .items-table th { background-color: #f1f5f9; padding: 10px; border: 1px solid #cbd5e0; text-transform: uppercase; font-weight: bold; }
-        .items-table td { padding: 12px 10px; border: 1px solid #cbd5e0; }
-        .signatures-container { margin-top: 50px; width: 100%; page-break-inside: avoid; }
-        .signature-block { width: 48%; display: inline-block; border: 1px solid #cbd5e0; background: #f8fafc; padding: 20px; vertical-align: top; text-align: center; }
-        .signature-canvas-wrapper { width: 100%; height: 80px; margin-top: 15px; border: 1px dashed #cbd5e0; display: flex; align-items: center; justify-content: center; }
-        .btn-clear-sig { background: #cbd5e0; border: none; color: #4a5568; padding: 2px 8px; cursor: pointer; font-weight: bold; }
+        
+        /* Datos de Empresa */
+        .company-title { font-size: 15pt; font-weight: 800; color: #1a202c; margin: 0 0 3px 0; }
+        .company-subtitle { font-size: 8.5pt; text-transform: uppercase; color: #4a5568; font-weight: bold; margin-bottom: 8px; }
+        .company-details { font-size: 8.5pt; color: #4a5568; line-height: 1.3; }
+        
+        /* Datos de Remito (Derecha) */
+        .document-title { font-size: 18pt; font-weight: 800; letter-spacing: 2px; margin: 0 0 5px 0; color: #1a202c; text-align: right; }
+        .document-details { text-align: right; font-size: 9pt; line-height: 1.4; }
+        
+        .tracking-banner { background-color: #1a202c; color: #ffffff; padding: 8px 15px; margin-bottom: 15px; border-radius: 2px; font-weight: bold; font-size: 10pt; }
+        
+        /* Bloques de Datos de Cliente y Transporte */
+        .info-table-container { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+        .info-table-container td { width: 50%; padding: 0; vertical-align: top; }
+        .info-block { border: 1px solid #cbd5e0; padding: 12px; min-height: 110px; }
+        .info-block-right { border-left: none; }
+        .info-block h3 { margin: 0 0 8px 0; font-size: 9.5pt; text-transform: uppercase; color: #1a202c; border-bottom: 1px solid #e2e8f0; padding-bottom: 3px; }
+        .info-data { font-size: 9pt; line-height: 1.4; }
+        
+        /* Tabla de Items */
+        .items-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .items-table th { background-color: #f1f5f9; padding: 8px; border: 1px solid #cbd5e0; text-transform: uppercase; font-size: 8.5pt; font-weight: bold; text-align: left; }
+        .items-table td { padding: 10px 8px; border: 1px solid #cbd5e0; font-size: 9pt; }
+        
+        /* Firmas */
+        .signatures-container { margin-top: 30px; width: 100%; page-break-inside: avoid; display: flex; justify-content: space-between; }
+        .signature-block { width: 48%; border: 1px solid #cbd5e0; background: #f8fafc; padding: 15px; text-align: center; }
+        .signature-canvas-wrapper { width: 100%; height: 75px; margin-top: 10px; border: 1px dashed #cbd5e0; display: flex; align-items: center; justify-content: center; background: #fff; }
+        .btn-clear-sig { background: #cbd5e0; border: none; color: #4a5568; padding: 2px 8px; cursor: pointer; font-weight: bold; margin-top: 5px; font-size: 8pt; }
+        
+        /* Panel de Acciones de Usuario */
         .action-panel { position: fixed; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.98); padding: 12px; border-radius: 8px; box-shadow: 0 4px 25px rgba(0,0,0,0.2); z-index: 10000; display: flex; gap: 8px; }
         .btn { padding: 10px 16px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .btn-pdf { background-color: #dc2626; color: white; }
@@ -45,51 +67,117 @@
     </div>
 
     <div class="printable-content" id="remitoContainer">
+        
+        <!-- ENCABEZADO PRINCIPAL -->
         <div class="invoice-box">
-            <div class="letter-badge"><span class="letter">A</span><span class="sub-letter">REMITO</span></div>
+            <div class="letter-badge">
+                <span class="letter">R</span>
+                <span class="sub-letter">REMITO</span>
+            </div>
             <table class="header-table">
                 <tr>
                     <td class="left-header">
                         <h1 class="company-title" contenteditable="true">PANROD LOGÍSTICA S.A.</h1>
                         <div class="company-subtitle" contenteditable="true">Distribuidora de Paquetería</div>
+                        <div class="company-details" contenteditable="true">
+                            <strong>Origen:</strong> Sede Parque Industrial, Martínez, Prov. de Buenos Aires<br>
+                            <strong>Teléfono:</strong> +54 9 221 310-9897 | info@panrodlogistica.com.ar<br>
+                            <strong>IVA:</strong> Responsable Inscripto
+                        </div>
                     </td>
                     <td>
                         <h2 class="document-title">REMITO</h2>
-                        <div contenteditable="true"><strong>Documento N°:</strong> 0001-00094772</div>
+                        <div class="document-details" contenteditable="true">
+                            <strong>Documento N°:</strong> 0001-00094772<br>
+                            <strong>Fecha de Emisión:</strong> 14/06/2026<br>
+                            <strong>CUIT:</strong> 30-71234567-9<br>
+                            <strong>Ingresos Brutos:</strong> 30-71234567-9<br>
+                            <strong>Inicio de Actividades:</strong> 01/03/2015
+                        </div>
                     </td>
                 </tr>
             </table>
         </div>
 
+        <!-- BANNER DE SEGUIMIENTO -->
         <div class="tracking-banner">
-            <div class="tracking-code-value" contenteditable="true">CÓDIGO: ACC-94772</div>
+            <div class="tracking-code-value" contenteditable="true">CÓDIGO DE SEGUIMIENTO / HOJA DE RUTA: ACC-94772</div>
         </div>
 
+        <!-- BLOQUE DE DATOS: DESTINATARIO Y LOGÍSTICA -->
+        <table class="info-table-container">
+            <tr>
+                <td>
+                    <div class="info-block">
+                        <h3>Destinatario / Cliente</h3>
+                        <div class="info-data" contenteditable="true">
+                            <strong>Razón Social:</strong> ALFA DISTRIBUCIONES S.R.L.<br>
+                            <strong>CUIT:</strong> 30-55443322-1<br>
+                            <strong>Dirección de Entrega:</strong> Av. Rivadavia 4520, CABA<br>
+                            <strong>Condición IVA:</strong> Responsable Inscripto
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="info-block info-block-right">
+                        <h3>Datos del Transporte / Envío</h3>
+                        <div class="info-data" contenteditable="true">
+                            <strong>Empresa Transportista:</strong> PROPIA (PANROD LOGÍSTICA)<br>
+                            <strong>Chofer:</strong> Carlos Mendoza<br>
+                            <strong>DNI Chofer:</strong> 32.415.899<br>
+                            <strong>Patente Vehículo:</strong> AF 123 CD
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- TABLA DE ARTÍCULOS -->
         <table class="items-table">
             <thead>
-                <tr><th>Código</th><th>Descripción</th><th>Cantidad</th></tr>
+                <tr>
+                    <th style="width: 20%;">Código</th>
+                    <th style="width: 60%;">Descripción del Producto / Contenido</th>
+                    <th style="width: 20%;">Cantidad</th>
+                </tr>
             </thead>
             <tbody>
                 <tr>
                     <td contenteditable="true">84377594200009</td>
-                    <td contenteditable="true">Mercancía Liviana de Distribución</td>
+                    <td contenteditable="true">Mercancía Liviana de Distribución - Bultos cerrados estándar</td>
                     <td contenteditable="true">200 Unidades</td>
+                </tr>
+                <tr>
+                    <td contenteditable="true">84377594200012</td>
+                    <td contenteditable="true">Pallet de Paquetería Mediana frágil</td>
+                    <td contenteditable="true">3 Unidades</td>
+                </tr>
+                <!-- Fila vacía opcional para agregar más items haciendo clic -->
+                <tr>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
+                    <td contenteditable="true"></td>
                 </tr>
             </tbody>
         </table>
 
+        <!-- SECCIÓN DE FIRMAS -->
         <div class="signatures-container">
             <div class="signature-block">
-                <strong>FIRMA DEL TRANSPORTISTA</strong>
+                <strong>FIRMA DEL TRANSPORTISTA / DESPACHO</strong>
                 <div class="signature-canvas-wrapper" id="firmaWrapper">
                     <input type="file" id="firmaInput" accept="image/*" onchange="cargarFirma(event)">
                     <img id="firmaTransportistaImg" style="max-width: 100%; max-height: 100%; display: none;" />
                 </div>
                 <button class="btn-clear-sig" id="btnBorrarFirma" onclick="borrarFirmaImg()" style="display:none;">Quitar Firma</button>
             </div>
-            <div class="signature-block" style="float: right;">
+            <div class="signature-block">
                 <strong>RECEPCIÓN CONFORME CLIENTE</strong>
-                <div style="height: 80px; margin-top: 15px; border-bottom: 1px dashed #718096;"></div>
+                <div style="height: 45px; margin-top: 10px; border-bottom: 1px dashed #718096;"></div>
+                <div style="text-align: left; font-size: 8pt; margin-top: 8px; color: #4a5568;" contenteditable="true">
+                    Aclaración: ___________________________<br>
+                    DNI/Fecha: ____/____/_______ Hora: _____:_____
+                </div>
             </div>
         </div>
     </div>
@@ -120,7 +208,17 @@
             const panel = document.getElementById('actionPanel');
             panel.style.display = 'none';
             const element = document.getElementById('remitoContainer');
-            html2pdf().from(element).save('Remito_PANROD.pdf').then(() => {
+            
+            // Configuración optimizada para html2pdf en una sola hoja A4
+            const opt = {
+                margin:       [10, 12, 10, 12],
+                filename:     'Remito_PANROD.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
                 panel.style.display = 'flex';
             });
         }
@@ -128,7 +226,7 @@
         function exportarImagen() {
             const panel = document.getElementById('actionPanel');
             panel.style.display = 'none';
-            html2canvas(document.getElementById('remitoContainer')).then(canvas => {
+            html2canvas(document.getElementById('remitoContainer'), { scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = 'Remito_PANROD.png';
                 link.href = canvas.toDataURL('image/png');
@@ -138,4 +236,5 @@
         }
     </script>
 </body>
-</html>
+    </html>
+                    
