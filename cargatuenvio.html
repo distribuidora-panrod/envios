@@ -236,7 +236,7 @@ color: var(--text-muted);
 margin-bottom: 8px;
 }
 
-.rate-values-grid {
+.rates-grid-values {
 display: flex;
 gap: 15px;
 flex-wrap: wrap;
@@ -401,14 +401,19 @@ font-family: 'Montserrat', sans-serif;
 }
 
 .live-quote-box .breakdown {
-font-size: 12px;
+font-size: 12.5px;
 color: #166534;
-margin-top: 5px;
+margin-top: 10px;
+line-height: 1.6;
 font-weight: 500;
+text-align: left;
+display: inline-block;
+max-width: 500px;
+width: 100%;
 }
 
 [data-theme="dark"] .live-quote-box .breakdown {
-    color: #86efac;
+    color: #e2e8f0;
 }
 
 /* BOTONES */
@@ -578,14 +583,14 @@ border: 1px solid var(--border-color);
 <div class="form-container">
     <div class="order-form-card">
         
-        <!-- 📦 SECCIÓN INCORPORADA: TARIFAS OFICIALES -->
+        <!-- 📦 SECCIÓN DE TARIFAS OFICIALES ACTUALIZADA (SIN ÁLBUMES) -->
         <div class="rates-container">
-            <div class="rates-title">📊 PANROD LOGÍSTICA - Tarifas Oficiales</div>
+            <div class="rates-title">📊 PANROD LOGÍSTICA - Tarifas Oficiales de Carga</div>
             
             <div class="rate-box-item">
                 <div class="rate-box-header">📦 1. Caja Chica / Lote Menor (Hasta 5 kg)</div>
-                <div class="rate-box-desc">Ideal para combos pequeños o álbumes sueltos.</div>
-                <div class="rate-values-grid">
+                <div class="rate-box-desc">Ideal para paquetes comerciales pequeños o bultos ligeros de oficina.</div>
+                <div class="rates-grid-values">
                     <div class="rate-value-tag">Regional: <span>$21.800</span></div>
                     <div class="rate-value-tag">Nacional: <span>$30.200</span></div>
                 </div>
@@ -593,8 +598,8 @@ border: 1px solid var(--border-color);
 
             <div class="rate-box-item">
                 <div class="rate-box-header">📦 2. Lote Mediano (De 5 kg a 15 kg)</div>
-                <div class="rate-box-desc">Abarca cajas medianas consolidadas o packs de distribución estándar.</div>
-                <div class="rate-values-grid">
+                <div class="rate-box-desc">Cajas medianas consolidadas o packs corporativos de distribución estándar.</div>
+                <div class="rates-grid-values">
                     <div class="rate-value-tag">De 5 a 10 kg → Regional: <span>$29.300</span> | Nacional: <span>$42.600</span></div>
                     <div class="rate-value-tag">De 10 a 15 kg → Regional: <span>$36.000</span> | Nacional: <span>$53.400</span></div>
                 </div>
@@ -602,15 +607,18 @@ border: 1px solid var(--border-color);
 
             <div class="rate-box-item">
                 <div class="rate-box-header">📦 3. Lote Mayorista / Pallet (+15 kg hasta 25 kg)</div>
-                <div class="rate-box-desc">Pensado para cajas máster de distribución, bultos pesados de imprenta o el stock completo de reventa.</div>
-                <div class="rate-values-grid">
+                <div class="rate-box-desc">Pensado para cajas máster de empaque, bultos industriales pesados de imprenta o stock completo de reventa.</div>
+                <div class="rates-grid-values">
                     <div class="rate-value-tag">Hasta 20 kg → Regional: <span>$42.500</span> | Nacional: <span>$62.100</span></div>
                     <div class="rate-value-tag">Hasta 25 kg → Regional: <span>$51.100</span> | Nacional: <span>$76.300</span></div>
                 </div>
             </div>
 
             <div class="insurance-notice-box">
-                <strong>💡 Seguro Operativo:</strong> Para bultos de alto valor se aplica un aforo del 3% sobre el costo declarado de la mercadería para blindar el paquete ante cualquier siniestro o pérdida en el tránsito troncal.
+                <strong>🛡️ Estructura Financiera de Seguridad y Cobertura:</strong><br>
+                • <strong>Seguro Operativo / Antirrobo:</strong> Se aplica estrictamente un aforo del 3% sobre el valor declarado de la mercadería. Blindaje homologado frente a pérdidas, siniestros o robos en tránsito.<br>
+                • <strong>Servicio Express:</strong> El despacho prioritario en el día añade un recargo del 25% sobre el envío base.<br>
+                • <strong>Marco Tributario:</strong> Se aplica el 21% de IVA sobre las tasas consolidadas de la operación.
             </div>
         </div>
 
@@ -687,11 +695,11 @@ border: 1px solid var(--border-color);
             </div>
 
             <!-- SECCIÓN 3: DETALLES DE LA CARGA Y OPERACIÓN -->
-            <div class="form-section-title">3. Especificaciones del Paquete e Información Operativa</div>
+            <div class="form-section-title">3. Especificaciones de la Carga e Información Operativa</div>
             <div class="form-grid">
                 <div class="form-group span-2">
                     <label for="carga_detalle">Contenido Detallado del Envío</label>
-                    <textarea id="carga_detalle" placeholder="Ej: Combo Platino - Medio Lote / 6 Cajas de 50 Unidades (Insumos y documentación comercial)" required></textarea>
+                    <textarea id="carga_detalle" placeholder="Ej: Mercadería comercial - Medio Lote / 6 Cajas máster de empaque (Insumos industriales y documentación comercial)" required></textarea>
                 </div>
                 <div class="form-group">
                     <label for="carga_valor">Valor Declarado de la Mercadería ($)</label>
@@ -712,7 +720,7 @@ border: 1px solid var(--border-color);
                 <div class="form-group span-2">
                     <label>Dimensiones Físicas del Bulto (En Centímetros)</label>
                     <div class="dimensions-grid">
-                        <input type="number" id="carga_alto" placeholder="Alto (cm)" min="1"required>
+                        <input type="number" id="carga_alto" placeholder="Alto (cm)" min="1" required>
                         <input type="number" id="carga_ancho" placeholder="Ancho (cm)" min="1" required>
                         <input type="number" id="carga_largo" placeholder="Largo (cm)" min="1" required>
                     </div>
@@ -721,9 +729,9 @@ border: 1px solid var(--border-color);
                 <!-- CONFIGURACIONES OPERATIVAS -->
                 <div class="form-group">
                     <label for="op_prioridad">Prioridad / Tipo de Servicio</label>
-                    <select id="op_prioridad" required>
+                    <select id="op_prioridad" onchange="calcularTasaLogistica()" required>
                         <option value="Estándar">🚚 Distribución Estándar (Troncal Federal)</option>
-                        <option value="Express">⚡ Despacho Express Prioritario (En el día)</option>
+                        <option value="Express">⚡ Despacho Express Prioritario (+25% Base)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -748,19 +756,25 @@ border: 1px solid var(--border-color);
                 </div>
             </div>
 
-            <!-- COTIZADOR EN TIEMPO REAL -->
+            <!-- COTIZADOR EN TIEMPO REAL DESGLOSADO -->
             <div class="live-quote-box">
-                <h4>Tasas Integrales de Envío y Seguro de Tránsito</h4>
+                <h4>Liquidación Automatizada de Tasas y Coberturas</h4>
                 <div class="price" id="tasa_calculada">$0</div>
-                <div class="breakdown" id="desglose_calculado">Envío Base: $0 | Seguro Operativo (3%): $0</div>
-                <p style="font-size: 11px; color: #166534; margin-top: 8px;" id="legal_quote_text">*Cálculo automatizado sujeto a revisión técnica de acopio.</p>
+                
+                <div class="breakdown" id="desglose_calculado">
+                    • Envío Base / Regional: $0<br>
+                    • Recargo Servicio Express: $0<br>
+                    • Cobertura Antirrobo (Aforo 3%): $0<br>
+                    • Impuesto al Valor Agregado (IVA 21%): $0
+                </div>
+                <p style="font-size: 11px; color: #166534; margin-top: 8px;" id="legal_quote_text">*Montos calculados de manera transparente sujetos a auditoría de pesaje físico.</p>
             </div>
 
             <!-- BOTÓN DE ACCIÓN ACCIONABLE -->
             <button type="submit" class="btn-submit-order">Generar Orden y Solicitar Despacho</button>
             
             <p class="legal-notice">
-                <strong>📋 CLÁUSULA LOGÍSTICA DE SEGURIDAD INTERNA:</strong> Al enviar este formulario, los datos se integran al circuito informático de PANROD LOGÍSTICA S.A. Toda carga ingresada cuenta con póliza de seguro de caución obligatoria contra pérdidas o siniestros en tránsito troncal federal. Se generará un código de seguimiento oficial de manera inmediata tras la validación administrativa.
+                <strong>📋 CLÁUSULA LOGÍSTICA DE SEGURIDAD INTERNA:</strong> Al enviar este formulario, los datos se integran al circuito informático de PANROD LOGÍSTICA S.A. Toda carga ingresada cuenta con póliza de seguro de caución obligatoria y aforo contra pérdidas o siniestros en tránsito troncal federal. Se generará un código de seguimiento oficial de manera inmediata tras la validación administrativa.
             </p>
         </form>
     </div>
@@ -809,7 +823,7 @@ function toggleTheme() {
     }
 }
 
-// Matriz indexada con los costos provistos
+// Matriz de Tarifas Oficiales
 const matrizTarifas = {
     "chica": { regional: 21800, nacional: 30200 },
     "mediana_10": { regional: 29300, nacional: 42600 },
@@ -821,23 +835,46 @@ const matrizTarifas = {
 function calcularTasaLogistica() {
     const provincia = document.getElementById("destino_provincia").value;
     const rangoPeso = document.getElementById("carga_peso").value;
+    const prioridad = document.getElementById("op_prioridad").value;
     
     let valorLimpio = document.getElementById("carga_valor").value.replace(/[^0-9]/g, '');
     const valorDeclarado = parseFloat(valorLimpio) || 0;
 
     if (!provincia) {
         document.getElementById("tasa_calculada").innerText = "$0";
-        document.getElementById("desglose_calculado").innerText = "Envío Base: $0 | Seguro Operativo (3%): $0";
+        document.getElementById("desglose_calculado").innerHTML = `
+            • Envío Base: $0<br>
+            • Recargo Servicio Express: $0<br>
+            • Cobertura Antirrobo (Aforo 3%): $0<br>
+            • Impuesto al Valor Agregado (IVA 21%): $0
+        `;
         return;
     }
 
     const tipoDestino = (provincia === "buenos_aires") ? "regional" : "nacional";
     const costoEnvioBase = matrizTarifas[rangoPeso][tipoDestino];
+    
+    // Cálculo de adicional express (25% sobre el base si corresponde)
+    const costoExpress = (prioridad === "Express") ? Math.round(costoEnvioBase * 0.25) : 0;
+    
+    // Seguro Operativo Antirrobo / Aforo del 3%
     const costoSeguro = (valorDeclarado > 0) ? Math.round(valorDeclarado * 0.03) : 0;
-    const totalNeto = costoEnvioBase + costoSeguro;
+    
+    // Subtotal para aplicar IVA
+    const subtotal = costoEnvioBase + costoExpress + costoSeguro;
+    const iva = Math.round(subtotal * 0.21);
+    
+    // Monto Final Neto
+    const totalNeto = subtotal + iva;
 
+    // Renderizado en Formulario
     document.getElementById("tasa_calculada").innerText = `$${totalNeto.toLocaleString("es-AR")}`;
-    document.getElementById("desglose_calculado").innerText = `Envío Base: $${costoEnvioBase.toLocaleString("es-AR")} | Seguro Operativo (3%): $${costoSeguro.toLocaleString("es-AR")}`;
+    document.getElementById("desglose_calculado").innerHTML = `
+        • Envío Base (${tipoDestino.toUpperCase()}): $${costoEnvioBase.toLocaleString("es-AR")}<br>
+        • Recargo Servicio Express: $${costoExpress.toLocaleString("es-AR")}<br>
+        • Cobertura Antirrobo (Aforo 3%): $${costoSeguro.toLocaleString("es-AR")}<br>
+        • Impuesto al Valor Agregado (IVA 21%): $${iva.toLocaleString("es-AR")}
+    `;
 }
 
 function procesarFormulario(event) {
@@ -872,46 +909,49 @@ function procesarFormulario(event) {
         const valorDeclarado = parseInt(valorLimpio) || 0;
         
         const tasaTotal = document.getElementById("tasa_calculada").innerText;
-        const desglose = document.getElementById("desglose_calculado").innerText;
+        
+        // Formatear desglose limpio para el cuerpo de texto de WhatsApp
+        let desgloseTexto = document.getElementById("desglose_calculado").innerText;
+        desgloseTexto = desgloseTexto.replace(/\n/g, '\n');
 
-        // Construcción de la plantilla estructurada detallada para WhatsApp
+        // Estructura de salida limpia corporativa para WhatsApp
         const mensajeWhatsApp = `Hola PANROD LOGÍSTICA.
 
-Solicito el despacho de una nueva orden con tracking pre-asignado.
+Solicito el despacho de una nueva orden comercial con tracking asignado.
 
 🆔 CÓDIGO DE SEGUIMIENTO: ${trackingCode}
 
-📦 DETALLES DE ORIGEN:
-• Remitente: ${remitente}
-• Teléfono: ${telefonoRemitente}
-• Depósito de Despacho: ${depositoOrigen}
+📦 DETALLES DE ORIGEN (REMITENTE):
+• Razón Social/Nombre: ${remitente}
+• Teléfono de Contacto: ${telefonoRemitente}
+• Nodo de Salida: ${depositoOrigen}
 
-🚚 DETALLES DE DESTINO:
+🚚 DETALLES DE DESTINO (RECEPCIÓN):
 • Destinatario: ${receptor} (DNI: ${dni})
 • Dirección: ${direccion}
 • Localidad: ${localidad} (CP: ${cp})
-• Provincia: ${provinciaTexto}
+• Jurisdicción: ${provinciaTexto}
 
-🛍️ INFORMACIÓN DE PRODUCTO / CARGA:
-• Contenido: ${mercaderia}
-• Dimensiones: ${alto}cm x ${ancho}cm x ${largo}cm
-• Valor Declarado: $ ${valorDeclarado.toLocaleString("es-AR")}
+🛍️ ESPECIFICACIONES DE CARGA Y VALUACIÓN:
+• Contenido Declarado: ${mercaderia}
+• Dimensiones Físicas: ${alto}cm x ${ancho}cm x ${largo}cm
+• Costo Nominal de Carga: $ ${valorDeclarado.toLocaleString("es-AR")}
 
-⚙️ CONFIGURACIÓN LOGÍSTICA:
-• Tipo de Servicio: ${prioridad}
-• Método de Pago: ${pago}
-• Horario de Entrega: ${horario}
-• Observaciones: ${notas ? notas : 'Ninguna'}
+⚙️ CONFIGURACIÓN DE OPERACIÓN INTERNA:
+• Modalidad de Distribución: ${prioridad}
+• Canal de Facturación: ${pago}
+• Ventana de Entrega: ${horario}
+• Nota Domiciliaria: ${notas ? notas : 'Ninguna'}
 
-💰 LIQUIDACIÓN DE TASAS LOGÍSTICAS:
-• PRECIO TOTAL NETO: ${tasaTotal}
-• Detalles: ${desglose}
+💰 DESGLOSE TOTAL DE LIQUIDACIÓN Y AUDITORÍA:
+${desgloseTexto}
+---------------------------------------------
+💵 IMPORTE TOTAL NETO A DEPOSITAR: ${tasaTotal}
 
-Quedo a la espera de la validación física en planta y los datos de la cuenta de acreditación central para la activación definitiva de la guía.`;
+Quedo en espera de la inspección de peso en planta y los datos de acreditación bancaria para la activación inmediata de la guía troncal.`;
 
         document.getElementById("loadingModal").style.display = "none";
         
-        // Redirección directa al nuevo número solicitado
         const urlDestino = 'https://wa.me/5491131803790?text=' + encodeURIComponent(mensajeWhatsApp);
         window.open(urlDestino, '_blank');
 
