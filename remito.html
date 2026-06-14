@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Remito de Entrega - PANROD LOGÍSTICA S.A.</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @page {
             size: A4;
@@ -263,7 +264,7 @@
 
         <div class="signatures-container">
             <div class="signature-block">
-                <div style="text-align: center; font-weight: bold; font-size: 9pt; color: #1a202c;">EMISIÓN Y LOGÍSTICA</div>
+                <div style="text-align: center; font-weight: bold; font-size: 9pt; color: #1a202c;">FIRMA DEL TRANSPORTISTA</div>
                 
                 <div class="signature-canvas-wrapper" id="firmaWrapper">
                     <input type="file" id="firmaInput" accept="image/png, image/jpeg" style="font-size: 8pt; width: 80%;" onchange="cargarFirma(event)">
@@ -273,7 +274,7 @@
                 <div class="signature-line"></div>
                 <button class="btn-clear-sig" id="btnBorrarFirma" onclick="borrarFirmaImg()" style="display:none;">Quitar Firma</button>
                 <div style="font-size: 8pt; color: #718096; text-align: center; font-weight: bold;" contenteditable="true">PANROD LOGÍSTICA S.A.</div>
-                <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Firma Digitalizada / Chofer asignado</div>
+                <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Chofer asignado / Transportista</div>
             </div>
             
             <div class="signature-block" style="float: right;">
@@ -336,55 +337,59 @@
             }
         }
 
-        function exportarPDF() {
-            if (document.activeElement) { document.activeElement.blur(); }
-            window.print();
-        }
-
-        function exportarImagen() {
-            if (document.activeElement) { document.activeElement.blur(); }
-            
+        function ocultarElementosPreExportacion() {
             const panel = document.getElementById('actionPanel');
             const trigger = document.getElementById('showTrigger');
-            const target = document.getElementById('remitoContainer');
             const btnClear = document.getElementById('btnBorrarFirma');
             const firmaInput = document.getElementById('firmaInput');
             
-            // Guardar estados originales
-            const panelOriginalDisplay = panel.style.display;
-            const triggerOriginalDisplay = trigger.style.display;
-            const btnClearOriginalDisplay = btnClear.style.display;
-            const inputOriginalDisplay = firmaInput.style.display;
+            const estadosOriginales = {
+                panel: panel.style.display,
+                trigger: trigger.style.display,
+                btnClear: btnClear ? btnClear.style.display : 'none',
+                firmaInput: firmaInput ? firmaInput.style.display : 'block'
+            };
             
-            // Ocultar elementos que no deben salir en la imagen
             panel.style.display = 'none';
             trigger.style.display = 'none';
-            btnClear.style.display = 'none';
-            firmaInput.style.display = 'none';
-
-            // Generar la imagen
-            html2canvas(target, { scale: 2, useCORS: true }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'Remito.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-                
-                // Restaurar elementos
-                panel.style.display = panelOriginalDisplay;
-                trigger.style.display = triggerOriginalDisplay;
-                btnClear.style.display = btnClearOriginalDisplay;
-                firmaInput.style.display = inputOriginalDisplay;
-            }).catch(err => {
-                console.error("Error al exportar la imagen: ", err);
-                alert("Hubo un problema al generar la imagen. Inténtelo nuevamente.");
-                // Restaurar elementos en caso de error
-                panel.style.display = panelOriginalDisplay;
-                trigger.style.display = triggerOriginalDisplay;
-                btnClear.style.display = btnClearOriginalDisplay;
-                firmaInput.style.display = inputOriginalDisplay;
-            });
+            if(btnClear) btnClear.style.display = 'none';
+            if(firmaInput) firmaInput.style.display = 'none';
+            
+            return estadosOriginales;
         }
-    </script>
-</body>
-                    </html>
-                                                                                    
+
+        function restaurarElementos(estados) {
+            const panel = document.getElementById('actionPanel');
+            const trigger = document.getElementById('showTrigger');
+            const btnClear = document.getElementById('btnBorrarFirma');
+            const firmaInput = document.getElementById('firmaInput');
+            
+            panel.style.display = estados.panel;
+            trigger.style.display = estados.trigger;
+            if(btnClear) btnClear.style.display = estados.btnClear;
+            if(firmaInput) firmaInput.style.display = estados.firmaInput;
+        }
+
+        // Descarga de PDF Directo (Sin ventana de impresión)
+        function exportarPDF() {
+            if (document.activeElement) { document.activeElement.blur(); }
+            
+            const estadosOriginales = ocultarElementosPreExportacion();
+            const elemento = document.getElementById('remitoContainer');
+            
+            const opciones = {
+                margin:       5,
+                filename:     'Remito_Logistica.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Generar y guardar el PDF, y al finalizar restaurar los botones
+            html2pdf().set(opciones).from(elemento).save().then(() => {
+                restaurarElementos(estadosOriginales);
+            }).catch(err => {
+                console.error("Error al exportar el PDF: ", err);
+                alert("Hubo un problema al generar el PDF. Inténtelo nuevamente.");
+                restaurarElementos(estadosOriginales);
+        
