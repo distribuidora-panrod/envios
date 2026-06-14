@@ -141,6 +141,40 @@ text-transform: uppercase;
 letter-spacing: 0.5px;
 }
 
+/* CAMPOS DE SISTEMA (SISTEMA AUTORELLENADO BLOQUEADO) */
+.system-row {
+background: #f1f5f9;
+padding: 15px 20px;
+border-radius: 14px;
+border: 1px dashed #cbd5e1;
+margin-bottom: 30px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.system-row label {
+font-size: 13px;
+font-weight: 700;
+color: #334155;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.input-readonly-system {
+background: #e2e8f0 !important;
+color: #475569 !important;
+border: 1px solid #cbd5e1 !important;
+font-weight: 700 !important;
+letter-spacing: 2px;
+text-align: center;
+font-family: 'Montserrat', sans-serif !important;
+cursor: not-allowed;
+width: 180px;
+padding: 10px !important;
+border-radius: 8px;
+}
+
 .form-grid {
 display: grid;
 grid-template-columns: repeat(2, 1fr);
@@ -148,8 +182,11 @@ gap: 20px;
 margin-bottom: 35px;
 }
 
-.form-grid.full-width {
-grid-template-columns: 1fr;
+/* Grid específico para tres columnas (Dimensiones) */
+.dimensions-grid {
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 15px;
 }
 
 .form-group {
@@ -367,6 +404,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
     .order-form-card { padding: 25px 20px; }
     .form-grid { grid-template-columns: 1fr; gap: 15px; }
     .form-group.span-2 { grid-column: span 1; }
+    .dimensions-grid { grid-template-columns: 1fr; gap: 10px; }
 }
 </style>
 </head>
@@ -388,6 +426,12 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
     <div class="order-form-card">
         <form id="envioForm" onsubmit="procesarFormulario(event)">
             
+            <!-- CÓDIGO DE SEGUIMIENTO AUTOMÁTICO RELLENADO Y BLOQUEADO -->
+            <div class="system-row">
+                <label for="tracking_id">ID de Seguimiento Asignado:</label>
+                <input type="text" id="tracking_id" class="input-readonly-system" readonly>
+            </div>
+
             <!-- SECCIÓN 1: DATOS DEL REMITENTE / PROVEEDOR -->
             <div class="form-section-title">1. Datos del Remitente (Origen)</div>
             <div class="form-grid">
@@ -446,7 +490,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
                 </div>
             </div>
 
-            <!-- SECCIÓN 3: DETALLES DE LA CARGA -->
+            <!-- SECCIÓN 3: DETALLES DE LA CARGA Y DIMENSIONES -->
             <div class="form-section-title">3. Especificaciones del Paquete / Mercadería</div>
             <div class="form-grid">
                 <div class="form-group span-2">
@@ -466,6 +510,16 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
                         <option value="mayorista_20">📦 Lote Mayorista (Hasta 20 kg)</option>
                         <option value="mayorista_25">📦 Lote Mayorista (Hasta 25 kg)</option>
                     </select>
+                </div>
+                
+                <!-- CAMPOS NUEVOS DE DIMENSIONES (CUBITAJE) -->
+                <div class="form-group span-2">
+                    <label>Dimensiones Físicas del Bulto (En Centímetros)</label>
+                    <div class="dimensions-grid">
+                        <input type="number" id="carga_alto" placeholder="Alto (cm)" min="1" required>
+                        <input type="number" id="carga_ancho" placeholder="Ancho (cm)" min="1" required>
+                        <input type="number" id="carga_largo" placeholder="Largo (cm)" min="1" required>
+                    </div>
                 </div>
             </div>
 
@@ -524,11 +578,17 @@ const matrizTarifas = {
     "mayorista_25": { regional: 51100, nacional: 76300 }
 };
 
+// Generador automático de Código de Seguimiento al cargar la página
+window.onload = function() {
+    const numeroAleatorio = Math.floor(100000 + Math.random() * 900000); // 6 dígitos exactos
+    document.getElementById("tracking_id").value = `PR-${numeroAleatorio}`;
+};
+
 function calcularTasaLogistica() {
     const provincia = document.getElementById("destino_provincia").value;
     const rangoPeso = document.getElementById("carga_peso").value;
     
-    // Limpieza de caracteres no numéricos en el input por si ponen puntos o signos de pesos
+    // Limpieza de caracteres no numéricos en el input
     let valorLimpio = document.getElementById("carga_valor").value.replace(/[^0-9]/g, '');
     const valorDeclarado = parseFloat(valorLimpio) || 0;
 
@@ -544,7 +604,7 @@ function calcularTasaLogistica() {
     // Obtener costo de envío base
     const costoEnvioBase = matrizTarifas[rangoPeso][tipoDestino];
 
-    // Calcular el aforo del 3% correspondiente al Seguro Operativo (Validado)
+    // Calcular el aforo del 3% correspondiente al Seguro Operativo
     const costoSeguro = (valorDeclarado > 0) ? Math.round(valorDeclarado * 0.03) : 0;
 
     // Sumatoria total de tasas integrales
@@ -564,6 +624,7 @@ function procesarFormulario(event) {
 
     setTimeout(() => {
         // Captura de datos
+        const trackingCode = document.getElementById("tracking_id").value;
         const remitente = document.getElementById("remitente_nombre").value;
         const receptor = document.getElementById("destino_nombre").value;
         const dni = document.getElementById("destino_dni").value;
@@ -572,41 +633,12 @@ function procesarFormulario(event) {
         const cp = document.getElementById("destino_cp").value;
         const mercaderia = document.getElementById("carga_detalle").value;
         
+        // Dimensiones
+        const alto = document.getElementById("carga_alto").value;
+        const ancho = document.getElementById("carga_ancho").value;
+        const largo = document.getElementById("carga_largo").value;
+        
         let valorLimpio = document.getElementById("carga_valor").value.replace(/[^0-9]/g, '');
         const valorDeclarado = parseInt(valorLimpio) || 0;
         
-        const tasaTotal = document.getElementById("tasa_calculada").innerText;
-        const desglose = document.getElementById("desglose_calculado").innerText;
-
-        // Construcción de la plantilla estructurada para el centro operativo
-        const mensajeWhatsApp = `Hola PANROD LOGÍSTICA.
-
-Solicito la creación de una nueva guía de distribución nacional.
-
-📦 DETALLES DE ORIGEN:
-Remitente: ${remitente}
-
-🚚 DETALLES DE DESTINO:
-Destinatario: ${receptor} (DNI: ${dni})
-Dirección: ${direccion}
-Localidad: ${localidad} (CP: ${cp})
-
-🛍️ INFORMACIÓN DE CARGA:
-Contenido: ${mercaderia}
-Valor Declarado: $ ${valorDeclarado.toLocaleString("es-AR")}
-Tasas Logísticas Calculadas: ${tasaTotal}
-(${desglose})
-
-Quedo a la espera de la asignación del código de seguimiento PR oficial y los datos de la cuenta central para la activación.`;
-
-        // Cerrar modal y redirigir al WhatsApp de soporte operativo oficial
-        document.getElementById("loadingModal").style.display = "none";
-        const urlDestino = 'https://wa.me/5492213109897?text=' + encodeURIComponent(mensajeWhatsApp);
-        window.open(urlDestino, '_blank');
-
-    }, 1500);
-}
-</script>
-</body>
-                                                                                       </html>
-                                
+        const tasaTotal = document.getElement
