@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editor y Generador de Etiquetas PANROD</title>
+    <title>Editor de Etiquetas Térmicas PANROD</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
@@ -11,7 +11,7 @@
             font-family: 'Helvetica Neue', Arial, sans-serif;
         }
         body {
-            background-color: #f4f6f9;
+            background-color: #f1f5f9;
             margin: 0;
             padding: 30px;
             display: flex;
@@ -25,26 +25,41 @@
             background: white;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            width: 420px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            width: 450px;
+            height: 90vh;
+            overflow-y: auto;
         }
         .editor-container h2 {
             margin-top: 0;
-            color: #1a1a1a;
+            color: #0f172a;
             font-size: 20px;
-            border-bottom: 2px solid #eaeaea;
+            border-bottom: 2px solid #e2e8f0;
             padding-bottom: 12px;
             margin-bottom: 20px;
         }
-        .form-group {
+        
+        /* Sistema de grilla para el formulario */
+        .form-row {
+            display: flex;
+            gap: 15px;
             margin-bottom: 16px;
         }
+        .form-group {
+            flex: 1;
+            margin-bottom: 16px;
+        }
+        .form-row .form-group {
+            margin-bottom: 0;
+        }
+
         .form-group label {
             display: block;
             font-weight: 600;
             margin-bottom: 6px;
-            font-size: 13px;
-            color: #4a5568;
+            font-size: 12px;
+            color: #475569;
+            text-transform: uppercase;
         }
         .form-group input, .form-group textarea {
             width: 100%;
@@ -52,7 +67,7 @@
             border: 1px solid #cbd5e1;
             border-radius: 6px;
             font-size: 14px;
-            color: #334155;
+            color: #1e293b;
             transition: border 0.2s;
         }
         .form-group input:focus, .form-group textarea:focus {
@@ -60,366 +75,357 @@
             border-color: #3b82f6;
         }
         .btn-download {
-            background-color: #1e293b;
+            background-color: #0f172a;
             color: white;
             border: none;
-            padding: 14px;
+            padding: 16px;
             width: 100%;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 10px;
             transition: background 0.2s;
         }
         .btn-download:hover {
-            background-color: #0f172a;
+            background-color: #1e293b;
         }
 
-        /* Contenedor de la Vista Previa (Etiqueta Real) */
+        /* Contenedor de la Vista Previa */
         .preview-container {
             position: sticky;
             top: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             border-radius: 4px;
             overflow: hidden;
         }
         
-        /* DISEÑO PROFESIONAL DE LA ETIQUETA */
+        /* DISEÑO DE ETIQUETA TÉRMICA VERTICAL (Estándar 10x15cm) */
         .label-ticket {
-            width: 450px;
+            width: 400px;
+            height: 600px;
             background: white;
             padding: 20px;
             color: black;
-            position: relative;
+            display: flex;
+            flex-direction: column;
         }
         
-        /* Encabezado */
+        /* 1. Encabezado: Logo y Origen */
         .label-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid black;
-            padding-bottom: 12px;
+            align-items: flex-start;
+            border-bottom: 3px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
         }
         .logo-placeholder {
-            width: 110px;
-            height: auto;
-            max-height: 60px;
+            max-width: 140px;
+            max-height: 50px;
             object-fit: contain;
         }
         .company-details {
-            font-size: 11px;
-            line-height: 1.4;
+            font-size: 10px;
+            line-height: 1.3;
             text-align: right;
-            color: #333;
-            max-width: 260px;
+            max-width: 200px;
         }
         .company-title {
             font-weight: 800;
-            font-size: 14px;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
 
-        /* Sección Badge de Ruta */
-        .barcode-section {
+        /* 2. Sección del Cliente y QR */
+        .client-section {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
+            align-items: flex-start;
+            border-bottom: 2px solid black;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+            flex-grow: 1;
         }
-        .xbg-badge {
+        .client-info {
+            width: 70%;
+        }
+        .client-title {
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        .client-name {
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+        .client-data {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .qr-placeholder {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+        }
+
+        /* 3. Bloque de Enrutamiento (HUB) */
+        .routing-block {
+            display: flex;
+            justify-content: space-between;
+            align-items: stretch;
+            border: 3px solid black;
+            margin-bottom: 5px;
+            height: 90px;
+        }
+        .route-badge {
             background: black;
             color: white;
+            font-weight: 900;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 25%;
+            text-align: center;
+        }
+        .hub-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+            font-size: 55px;
+            font-weight: 900;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+        .box-badge {
+            border-left: 3px solid black;
+            display: flex;
+            flex-direction: column;
+            width: 20%;
+        }
+        .box-badge div {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 900;
+        }
+        .box-badge div:first-child {
+            border-bottom: 3px solid black;
+        }
+
+        /* 4. Sub-rutas y modo de despacho */
+        .route-path {
+            text-align: center;
+            font-size: 14px;
             font-weight: 800;
-            padding: 6px 14px;
-            font-size: 16px;
-            letter-spacing: 0.5px;
-            border-radius: 2px;
+            letter-spacing: 1px;
+            padding: 8px 0;
+            border-bottom: 2px dashed black;
+            margin-bottom: 10px;
         }
         .dispatch-mode {
-            font-size: 12px;
-            font-weight: 700;
-            border: 2px solid black;
-            padding: 4px 10px;
-            letter-spacing: 0.5px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
         }
-        
-        /* Código de barras */
+
+        /* 5. Código de barras (Abajo de todo) */
         .barcode-container {
             text-align: center;
-            padding: 10px 0;
-            border-bottom: 1px dashed #666;
+            margin-top: auto; /* Empuja el código hacia abajo */
         }
         .barcode-render {
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            height: 60px;
-            width: 90%;
-            margin: 0 auto;
-            overflow: hidden;
+            height: 80px;
+            width: 100%;
         }
-        .barcode-bar {
-            background-color: black;
-            height: 100%;
-        }
-        .barcode-space {
-            background-color: transparent;
-            height: 100%;
-        }
+        .barcode-bar { background-color: black; height: 100%; }
+        .barcode-space { background-color: transparent; height: 100%; }
+        
         .barcode-num {
-            font-size: 16px;
-            letter-spacing: 3px;
-            margin-top: 6px;
-            font-weight: 700;
-        }
-
-        /* Bloque Central de Seguimiento y HUB */
-        .hub-section {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px dashed #666;
-        }
-        .box-badge {
-            border: 2px solid black;
-            font-size: 26px;
+            font-size: 18px;
+            letter-spacing: 4px;
+            margin-top: 5px;
             font-weight: 800;
-            padding: 4px 10px;
-            min-width: 55px;
-            text-align: center;
-        }
-        .hub-center-container {
-            text-align: center;
-        }
-        .tracking-title {
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: #555;
-            margin-bottom: 2px;
-        }
-        .hub-title {
-            font-size: 44px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            line-height: 1;
-            text-transform: uppercase;
         }
 
-        /* Ruta interna */
-        .route-section {
-            text-align: center;
-            font-size: 13px;
-            font-weight: 700;
-            padding: 8px 0;
-            letter-spacing: 2px;
-            background-color: #f8fafc;
-            border-bottom: 2px solid black;
-        }
-
-        /* Sección del Cliente */
-        .client-section {
-            padding-top: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            position: relative;
-            min-height: 110px;
-        }
-        .client-info {
-            width: 72%;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        .client-info div {
-            margin-bottom: 4px;
-            color: #222;
-        }
-        .client-info .bold-text {
-            font-weight: 700;
-            color: black;
-            display: inline-block;
-            width: 75px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        /* Gráficos QR */
-        .graphics-container {
-            width: 25%;
-            display: flex;
-            justify-content: flex-end;
-        }
-        .qr-placeholder {
-            width: 85px;
-            height: 85px;
-            object-fit: contain;
-        }
-        
-        /* El "13" manuscrito ahora se ve más integrado y realista */
-        .handwritten-marker {
-            position: absolute;
-            right: 105px;
-            top: 12px;
-            font-family: 'Courier New', monospace, sans-serif;
-            font-size: 70px;
-            font-weight: 900;
-            color: rgba(26, 26, 36, 0.85);
-            transform: rotate(-7deg);
-            user-select: none;
-            pointer-events: none;
-        }
-
-        /* Pie de página corporativo */
-        .footer-text {
-            text-align: center;
-            font-size: 10px;
-            font-weight: 800;
-            margin-top: 15px;
-            letter-spacing: 2px;
-            border-top: 2px solid black;
-            padding-top: 8px;
-            text-transform: uppercase;
-        }
     </style>
 </head>
 <body>
 
     <div class="editor-container">
-        <h2>Editor de Etiqueta</h2>
+        <h2>Editor de Etiqueta (En Vivo)</h2>
         
-        <div class="form-group">
-            <label>Subir Logo de la Empresa (PANROD)</label>
-            <input type="file" id="input-logo" accept="image/*">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Logo de la Empresa</label>
+                <input type="file" id="input-logo" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label>Código QR</label>
+                <input type="file" id="input-qr" accept="image/*">
+            </div>
         </div>
 
         <div class="form-group">
-            <label>Subir Código QR Destino</label>
-            <input type="file" id="input-qr" accept="image/*">
+            <label>Datos de Origen (Remitente)</label>
+            <textarea id="txt-origen" rows="3">PANROD LOGÍSTICA S.A.&#10;Av. Córdoba 1351, Piso 3 - OF 7&#10;Tel: +54 9 221 310-9897</textarea>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Nombre del Destinatario</label>
+                <input type="text" id="txt-cliente-nombre" value="Susana Sánchez Cuba">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>DNI</label>
+                <input type="text" id="txt-cliente-dni" value="94.404.743">
+            </div>
+            <div class="form-group">
+                <label>Pedido / Producto</label>
+                <input type="text" id="txt-cliente-pedido" value="COMBO PLATINO">
+            </div>
+        </div>
+
+        <hr style="border:1px solid #e2e8f0; margin: 20px 0;">
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Código HUB Central</label>
+                <input type="text" id="txt-hub" value="HUB7">
+            </div>
+            <div class="form-group">
+                <label>Zona (Insignia Oscura)</label>
+                <input type="text" id="txt-zona" value="XBG1">
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>Cuadro Lateral 1</label>
+                <input type="text" id="txt-box1" value="28">
+            </div>
+            <div class="form-group">
+                <label>Cuadro Lateral 2</label>
+                <input type="text" id="txt-box2" value="R">
+            </div>
         </div>
 
         <div class="form-group">
-            <label>Datos de Origen (Empresa)</label>
-            <textarea id="txt-origen" rows="3">PANROD LOGÍSTICA S.A.&#10;Oficina Central (Origen)&#10;Av. Córdoba 1351, Piso 3 - OF 7&#10;Tel: +54 9 221 310-9897</textarea>
+            <label>Ruta de Derivación</label>
+            <input type="text" id="txt-ruta" value="XBG1 > SET1 > A2">
         </div>
 
-        <div class="form-group">
-            <label>Modo de Despacho</label>
-            <input type="text" id="txt-despacho" value="CAMIONETA">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Modo de Despacho</label>
+                <input type="text" id="txt-despacho" value="CAMIONETA">
+            </div>
+            <div class="form-group">
+                <label>Número de Tracking</label>
+                <input type="text" id="txt-barcode-num" value="58392140682">
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Código de Seguimiento / HUB</label>
-            <input type="text" id="txt-hub" value="HUB7">
-        </div>
-
-        <div class="form-group">
-            <label>Número de Envío (Código de barras)</label>
-            <input type="text" id="txt-barcode-num" value="58392140682">
-        </div>
-
-        <div class="form-group">
-            <label>Nombre y Apellido del Cliente</label>
-            <input type="text" id="txt-cliente-nombre" value="Susana Sánchez Cuba">
-        </div>
-
-        <div class="form-group">
-            <label>DNI del Cliente</label>
-            <input type="text" id="txt-cliente-dni" value="94.404.743">
-        </div>
-
-        <div class="form-group">
-            <label>Detalle del Pedido</label>
-            <input type="text" id="txt-cliente-pedido" value="COMBO PLATINO">
-        </div>
-
-        <button class="btn-download" id="btn-capture">Descargar Etiqueta (PNG)</button>
+        <button class="btn-download" id="btn-capture">Generar Imagen (PNG)</button>
     </div>
 
     <div class="preview-container">
         <div class="label-ticket" id="etiqueta-descargar">
             
             <div class="label-header">
-                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='50'><text x='0' y='32' font-family='Arial' font-size='18' font-weight='900' fill='black'>PANROD</text></svg>" class="logo-placeholder" id="lbl-logo" alt="Logo">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='40'><text x='0' y='30' font-family='Arial' font-size='24' font-weight='900' fill='black'>PANROD</text></svg>" class="logo-placeholder" id="lbl-logo" alt="Logo">
                 <div class="company-details" id="lbl-origen"></div>
-            </div>
-
-            <div class="barcode-section">
-                <div class="xbg-badge">XBG1</div>
-                <div class="dispatch-mode" id="lbl-despacho">DESPACHO: CAMIONETA</div>
-            </div>
-
-            <div class="barcode-container">
-                <div class="barcode-render" id="barcode-render"></div>
-                <div class="barcode-num" id="lbl-barcode-num">58392140682</div>
-            </div>
-
-            <div class="hub-section">
-                <div class="box-badge">28</div>
-                <div class="hub-center-container">
-                    <div class="tracking-title">Código de seguimiento</div>
-                    <div class="hub-title" id="lbl-hub">HUB7</div>
-                </div>
-                <div class="box-badge">R</div>
-            </div>
-
-            <div class="route-section">
-                XBG1 &gt; SET1 &gt; A2
             </div>
 
             <div class="client-section">
                 <div class="client-info">
-                    <div><span class="bold-text">Cliente:</span> <span id="lbl-nom"></span></div>
-                    <div><span class="bold-text">DNI:</span> <span id="lbl-dni"></span></div>
-                    <div><span class="bold-text">Pedido:</span> <span id="lbl-ped"></span></div>
+                    <div class="client-title">Entregar a:</div>
+                    <div class="client-name" id="lbl-nom"></div>
+                    <div class="client-data">
+                        <strong>DNI:</strong> <span id="lbl-dni"></span><br>
+                        <strong>CONTENIDO:</strong> <span id="lbl-ped"></span>
+                    </div>
                 </div>
-                
-                <div class="handwritten-marker">13</div>
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='90' height='90'><rect width='90' height='90' fill='%23ffffff' stroke='black' stroke-width='4'/><rect x='15' y='15' width='20' height='20' fill='black'/><rect x='55' y='15' width='20' height='20' fill='black'/><rect x='15' y='55' width='20' height='20' fill='black'/><rect x='60' y='60' width='15' height='15' fill='black'/></svg>" class="qr-placeholder" id="lbl-qr" alt="QR">
+            </div>
 
-                <div class="graphics-container">
-                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='80' height='80'><rect width='80' height='80' fill='%23ffffff' stroke='black' stroke-width='2'/><line x1='10' y1='10' x2='70' y2='70' stroke='%23ccc'/><line x1='70' y1='10' x2='10' y2='70' stroke='%23ccc'/><text x='25' y='45' font-family='Arial' font-size='12' font-weight='bold'>QR</text></svg>" class="qr-placeholder" id="lbl-qr" alt="QR">
+            <div class="routing-block">
+                <div class="route-badge" id="lbl-zona"></div>
+                <div class="hub-center" id="lbl-hub"></div>
+                <div class="box-badge">
+                    <div id="lbl-box1"></div>
+                    <div id="lbl-box2"></div>
                 </div>
             </div>
 
-            <div class="footer-text">
-                Sistema de Distribución Nacional • PANROD
+            <div class="route-path" id="lbl-ruta"></div>
+            <div class="dispatch-mode" id="lbl-despacho"></div>
+
+            <div class="barcode-container">
+                <div class="barcode-render" id="barcode-render"></div>
+                <div class="barcode-num" id="lbl-barcode-num"></div>
             </div>
 
         </div>
     </div>
 
     <script>
-        // Elementos del formulario
-        const txtOrigen = document.getElementById('txt-origen');
-        const txtDespacho = document.getElementById('txt-despacho');
-        const txtHub = document.getElementById('txt-hub');
-        const txtBarcodeNum = document.getElementById('txt-barcode-num');
-        const txtNombre = document.getElementById('txt-cliente-nombre');
-        const txtDni = document.getElementById('txt-cliente-dni');
-        const txtPedido = document.getElementById('txt-cliente-pedido');
+        // Obtener todos los inputs
+        const inputs = {
+            origen: document.getElementById('txt-origen'),
+            nom: document.getElementById('txt-cliente-nombre'),
+            dni: document.getElementById('txt-cliente-dni'),
+            ped: document.getElementById('txt-cliente-pedido'),
+            hub: document.getElementById('txt-hub'),
+            zona: document.getElementById('txt-zona'),
+            box1: document.getElementById('txt-box1'),
+            box2: document.getElementById('txt-box2'),
+            ruta: document.getElementById('txt-ruta'),
+            despacho: document.getElementById('txt-despacho'),
+            barcode: document.getElementById('txt-barcode-num')
+        };
+
+        // Obtener elementos visuales de la etiqueta
+        const labels = {
+            origen: document.getElementById('lbl-origen'),
+            nom: document.getElementById('lbl-nom'),
+            dni: document.getElementById('lbl-dni'),
+            ped: document.getElementById('lbl-ped'),
+            hub: document.getElementById('lbl-hub'),
+            zona: document.getElementById('lbl-zona'),
+            box1: document.getElementById('lbl-box1'),
+            box2: document.getElementById('lbl-box2'),
+            ruta: document.getElementById('lbl-ruta'),
+            despacho: document.getElementById('lbl-despacho'),
+            barcode: document.getElementById('lbl-barcode-num')
+        };
+
         const inputLogo = document.getElementById('input-logo');
         const inputQr = document.getElementById('input-qr');
-
-        // Elementos visuales de la etiqueta
-        const lblOrigen = document.getElementById('lbl-origen');
-        const lblDespacho = document.getElementById('lbl-despacho');
-        const lblHub = document.getElementById('lbl-hub');
-        const lblBarcodeNum = document.getElementById('lbl-barcode-num');
-        const lblNom = document.getElementById('lbl-nom');
-        const lblDni = document.getElementById('lbl-dni');
-        const lblPed = document.getElementById('lbl-ped');
         const lblLogo = document.getElementById('lbl-logo');
         const lblQr = document.getElementById('lbl-qr');
         const barcodeRender = document.getElementById('barcode-render');
 
-        // Función pseudo-aleatoria para barras
+        // Generador visual de código de barras
         function generarCodigoBarras(numero) {
             barcodeRender.innerHTML = '';
             if(!numero) numero = "0";
@@ -427,9 +433,9 @@
             let semilla = numero.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
             let patron = [1, 0, 1, 0];
             
-            for (let i = 0; i < 40; i++) {
+            for (let i = 0; i < 48; i++) {
                 semilla = (semilla * 9301 + 49297) % 233280;
-                let grosorBarra = (semilla % 3) + 1; 
+                let grosorBarra = (semilla % 4) + 1; 
                 let grosorEspacio = ((semilla >> 2) % 3) + 1;
                 
                 for(let b=0; b<grosorBarra; b++) patron.push(1);
@@ -441,45 +447,44 @@
             patron.forEach(tipo => {
                 const elemento = document.createElement('div');
                 elemento.className = tipo === 1 ? 'barcode-bar' : 'barcode-space';
-                elemento.style.width = '2px';
+                elemento.style.width = '2.5px'; // Barras un poco más anchas
                 barcodeRender.appendChild(elemento);
             });
         }
 
-        // Actualizar datos en vivo
+        // Función centralizada para actualizar toda la etiqueta
         function actualizarEtiqueta() {
-            // Dividir la primera línea del remitente para ponerle negrita estilizada
-            let lineas = txtOrigen.value.split('\n');
-            if(lineas.length > 0) {
-                lineas[0] = `<div class="company-title">${lineas[0]}</div>`;
-            }
-            lblOrigen.innerHTML = lineas.join('<br>');
+            // Formatear el texto de origen para poner negrita en la primera línea
+            let lineas = inputs.origen.value.split('\n');
+            if(lineas.length > 0) { lineas[0] = `<div class="company-title">${lineas[0]}</div>`; }
+            labels.origen.innerHTML = lineas.join('<br>');
             
-            lblDespacho.textContent = 'DESPACHO: ' + txtDespacho.value.toUpperCase();
-            lblHub.textContent = txtHub.value.toUpperCase();
-            lblBarcodeNum.textContent = txtBarcodeNum.value;
-            lblNom.textContent = txtNombre.value;
-            lblDni.textContent = txtDni.value;
-            lblPed.textContent = txtPedido.value;
+            // Asignación directa de textos
+            labels.nom.textContent = inputs.nom.value;
+            labels.dni.textContent = inputs.dni.value;
+            labels.ped.textContent = inputs.ped.value;
+            labels.hub.textContent = inputs.hub.value.toUpperCase();
+            labels.zona.textContent = inputs.zona.value.toUpperCase();
+            labels.box1.textContent = inputs.box1.value.toUpperCase();
+            labels.box2.textContent = inputs.box2.value.toUpperCase();
+            labels.ruta.textContent = inputs.ruta.value.toUpperCase();
+            labels.despacho.textContent = 'DESPACHO: ' + inputs.despacho.value.toUpperCase();
+            labels.barcode.textContent = inputs.barcode.value;
             
-            generarCodigoBarras(txtBarcodeNum.value);
+            generarCodigoBarras(inputs.barcode.value);
         }
 
-        // Listeners de edición
-        txtOrigen.addEventListener('input', actualizarEtiqueta);
-        txtDespacho.addEventListener('input', actualizarEtiqueta);
-        txtHub.addEventListener('input', actualizarEtiqueta);
-        txtBarcodeNum.addEventListener('input', actualizarEtiqueta);
-        txtNombre.addEventListener('input', actualizarEtiqueta);
-        txtDni.addEventListener('input', actualizarEtiqueta);
-        txtPedido.addEventListener('input', actualizarEtiqueta);
+        // Agregar listeners a todos los campos de texto
+        Object.values(inputs).forEach(input => {
+            input.addEventListener('input', actualizarEtiqueta);
+        });
 
-        // Inputs de archivos
+        // Imágenes
         inputLogo.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) { lblLogo.src = e.target.result; }
+                reader.onload = e => lblLogo.src = e.target.result;
                 reader.readAsDataURL(file);
             }
         });
@@ -488,30 +493,30 @@
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) { lblQr.src = e.target.result; }
+                reader.onload = e => lblQr.src = e.target.result;
                 reader.readAsDataURL(file);
             }
         });
 
-        // Carga inicial
+        // Ejecutar al cargar la página
         actualizarEtiqueta();
 
-        // Capturar como PNG
+        // Botón de captura PNG
         document.getElementById('btn-capture').addEventListener('click', function() {
             const objetivo = document.getElementById('etiqueta-descargar');
             
             html2canvas(objetivo, {
-                scale: 3, // Mayor escala para una nitidez perfecta en impresión
+                scale: 3, // Alta calidad para impresión
                 backgroundColor: "#ffffff",
                 useCORS: true
             }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'etiqueta_' + txtNombre.value.replace(/\s+/g, '_') + '.png';
+                link.download = 'etiqueta_termica_' + inputs.nom.value.replace(/\s+/g, '_') + '.png';
                 link.href = canvas.toDataURL('image/png');
                 link.click();
             });
         });
     </script>
 </body>
-    </html>
-    
+            </html>
+                
