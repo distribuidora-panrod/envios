@@ -6,157 +6,35 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
-        @page {
-            size: A4;
-            margin: 15mm 12mm;
-            @bottom-right {
-                content: "Página " counter(page) " de " counter(pages);
-                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-                font-size: 8pt;
-                color: #718096;
-            }
-        }
+        @page { size: A4; margin: 15mm 12mm; }
         *, *::before, *::after { box-sizing: border-box; }
-        body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            margin: 0; padding: 0;
-            color: #2d3748; background-color: #ffffff;
-            font-size: 10pt; line-height: 1.4;
-            padding-bottom: 80px;
-        }
-
-        .printable-content {
-            background-color: #ffffff;
-            padding: 5px;
-        }
-        
-        .invoice-box {
-            border: 1px solid #1a202c;
-            position: relative;
-            margin-bottom: 20px;
-        }
-        
-        .letter-badge {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            border-left: 1px solid #1a202c;
-            border-right: 1px solid #1a202c;
-            border-bottom: 1px solid #1a202c;
-            width: 45px;
-            height: 45px;
-            text-align: center;
-            background: #ffffff;
-            z-index: 10;
-        }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; color: #2d3748; background-color: #ffffff; font-size: 10pt; line-height: 1.4; padding-bottom: 80px; }
+        .printable-content { background-color: #ffffff; padding: 5px; }
+        .invoice-box { border: 1px solid #1a202c; position: relative; margin-bottom: 20px; }
+        .letter-badge { position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-left: 1px solid #1a202c; border-right: 1px solid #1a202c; border-bottom: 1px solid #1a202c; width: 45px; height: 45px; text-align: center; background: #ffffff; z-index: 10; }
         .letter-badge .letter { font-size: 22pt; font-weight: 800; line-height: 42px; display: block; }
         .letter-badge .sub-letter { font-size: 6pt; display: block; margin-top: -5px; color: #4a5568; }
-
         .header-table { width: 100%; border-collapse: collapse; }
         .header-table td { width: 50%; padding: 20px; vertical-align: top; }
         .left-header { border-right: 1px solid #1a202c; }
-        
-        .company-title { font-size: 16pt; font-weight: 800; color: #1a202c; margin: 0 0 5px 0; letter-spacing: -0.5px; }
+        .company-title { font-size: 16pt; font-weight: 800; color: #1a202c; margin: 0 0 5px 0; }
         .company-subtitle { font-size: 9pt; text-transform: uppercase; color: #4a5568; font-weight: bold; margin-bottom: 10px; }
-        .company-details { font-size: 9pt; color: #4a5568; line-height: 1.5; }
-        
         .document-title { font-size: 20pt; font-weight: 800; letter-spacing: 2px; margin: 0 0 10px 0; color: #1a202c; text-align: right; }
-        .document-details { font-size: 10pt; text-align: right; line-height: 1.6; }
-
-        .afip-style-bar {
-            background-color: #f8fafc;
-            border-top: 1px solid #1a202c;
-            border-bottom: 1px solid #1a202c;
-            padding: 6px 20px;
-            font-size: 7.5pt;
-            font-weight: bold;
-            color: #4a5568;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-        
         .tracking-banner { background-color: #1a202c; color: #ffffff; padding: 12px 20px; margin-bottom: 20px; border-radius: 2px; }
-        .tracking-table { width: 100%; border-collapse: collapse; }
-        .tracking-code-value { font-size: 13pt; font-weight: bold; letter-spacing: 1px; font-family: monospace; }
-        .tracking-route { text-align: right; font-weight: bold; color: #cbd5e0; font-size: 11pt; }
-
         .info-grid { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
-        .info-block { width: 50%; border: 1px solid #cbd5e0; padding: 15px; vertical-align: top; background-color: #ffffff; }
-        .info-block:first-child { border-right: none; }
-        .info-block-title { font-size: 8.5pt; font-weight: bold; text-transform: uppercase; color: #1a202c; border-bottom: 2px solid #1a202c; padding-bottom: 4px; margin-bottom: 10px;}
-        .info-row { margin-bottom: 6px; font-size: 9.5pt; }
-        .info-label { color: #718096; width: 85px; display: inline-block; }
-        .info-value { font-weight: 600; color: #2d3748; }
-
+        .info-block { width: 50%; border: 1px solid #cbd5e0; padding: 15px; vertical-align: top; }
         .items-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        .items-table th { background-color: #f1f5f9; color: #1a202c; font-size: 8.5pt; padding: 10px; border: 1px solid #cbd5e0; text-transform: uppercase; font-weight: bold; }
-        .items-table td { padding: 12px 10px; border: 1px solid #cbd5e0; font-size: 9.5pt; }
-        
+        .items-table th { background-color: #f1f5f9; padding: 10px; border: 1px solid #cbd5e0; text-transform: uppercase; font-weight: bold; }
+        .items-table td { padding: 12px 10px; border: 1px solid #cbd5e0; }
         .signatures-container { margin-top: 50px; width: 100%; page-break-inside: avoid; }
         .signature-block { width: 48%; display: inline-block; border: 1px solid #cbd5e0; background: #f8fafc; padding: 20px; vertical-align: top; text-align: center; }
-        
-        /* Contenedor de firma modificado para imagen */
-        .signature-canvas-wrapper {
-            position: relative;
-            width: 100%;
-            height: 80px;
-            margin-top: 15px;
-            background: #ffffff;
-            border: 1px dashed #cbd5e0;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-        
-        .signature-line { border-top: 1px dashed #718096; width: 85%; margin: 8px auto 10px auto; }
-        
-        .btn-clear-sig {
-            background: #cbd5e0;
-            border: none;
-            color: #4a5568;
-            font-size: 7.5pt;
-            padding: 2px 8px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 5px;
-            transition: background 0.2s;
-        }
-        .btn-clear-sig:hover { background: #a0aec0; }
-
-        .legal-footer { margin-top: 40px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 8pt; color: #718096; text-align: center; }
-
-        [contenteditable="true"]:hover { background-color: #f0fdf4; outline: 1px dashed #22c55e; cursor: pointer; }
-        [contenteditable="true"]:focus { background-color: #f0fdf4; outline: 2px solid #22c55e; }
-
-        .action-panel {
-            position: fixed; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.98);
-            padding: 12px; border-radius: 8px; box-shadow: 0 4px 25px rgba(0,0,0,0.2);
-            z-index: 10000; border: 1px solid #cbd5e0; font-family: Arial, sans-serif;
-            display: flex; gap: 8px; align-items: center;
-        }
-        .btn { display: inline-block; padding: 10px 16px; border: none; border-radius: 4px; font-weight: bold; font-size: 9pt; cursor: pointer; transition: all 0.2s ease; text-align: center; }
+        .signature-canvas-wrapper { width: 100%; height: 80px; margin-top: 15px; border: 1px dashed #cbd5e0; display: flex; align-items: center; justify-content: center; }
+        .btn-clear-sig { background: #cbd5e0; border: none; color: #4a5568; padding: 2px 8px; cursor: pointer; font-weight: bold; }
+        .action-panel { position: fixed; bottom: 20px; right: 20px; background: rgba(255, 255, 255, 0.98); padding: 12px; border-radius: 8px; box-shadow: 0 4px 25px rgba(0,0,0,0.2); z-index: 10000; display: flex; gap: 8px; }
+        .btn { padding: 10px 16px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
         .btn-pdf { background-color: #dc2626; color: white; }
-        .btn-pdf:hover { background-color: #b91c1c; }
         .btn-img { background-color: #2563eb; color: white; }
-        .btn-img:hover { background-color: #1d4ed8; }
-        .btn-hide { background-color: #718096; color: white; padding: 10px 10px; }
-        .btn-hide:hover { background-color: #4a5568; }
-
-        .show-panel-trigger {
-            position: fixed; bottom: 10px; right: 10px; background: #1a202c; color: white;
-            padding: 5px 10px; font-size: 7.5pt; border-radius: 4px; cursor: pointer; display: none; z-index: 9999; font-weight: bold; opacity: 0.7;
-        }
-        .show-panel-trigger:hover { opacity: 1; }
-
-        @media print {
-            .action-panel, .show-panel-trigger, .btn-clear-sig, #firmaInput { display: none !important; }
-            .signature-canvas-wrapper { border: none !important; background: transparent !important; }
-            [contenteditable="true"]:hover, [contenteditable="true"]:focus { background-color: transparent !important; outline: none !important; }
-        }
+        @media print { .action-panel { display: none !important; } }
     </style>
 </head>
 <body>
@@ -164,136 +42,59 @@
     <div class="action-panel" id="actionPanel">
         <button class="btn btn-pdf" onclick="exportarPDF()">Descargar PDF</button>
         <button class="btn btn-img" onclick="exportarImagen()">Descargar Imagen</button>
-        <button class="btn btn-hide" title="Ocultar controles temporariamente" onclick="alternarPanel(false)">✕</button>
-    </div>
-
-    <div class="show-panel-trigger" id="showTrigger" onclick="alternarPanel(true)">
-        Mostrar Controles
     </div>
 
     <div class="printable-content" id="remitoContainer">
-        
         <div class="invoice-box">
-            <div class="letter-badge">
-                <span class="letter">A</span>
-                <span class="sub-letter">REMITO</span>
-            </div>
-            
+            <div class="letter-badge"><span class="letter">A</span><span class="sub-letter">REMITO</span></div>
             <table class="header-table">
                 <tr>
                     <td class="left-header">
                         <h1 class="company-title" contenteditable="true">PANROD LOGÍSTICA S.A.</h1>
                         <div class="company-subtitle" contenteditable="true">Distribuidora de Paquetería</div>
-                        <div class="company-details">
-                            <strong>Oficina Central:</strong> <span contenteditable="true">Av. Córdoba 1351, Piso 3 - OFICINA 7</span><br>
-                            <strong>Tel:</strong> <span contenteditable="true">+54 9 221 310-9897</span><br>
-                            <strong>CUIT:</strong> <span contenteditable="true">30-71689422-9</span><br>
-                            <strong>Ingresos Brutos:</strong> <span contenteditable="true">30-71689422-9</span>
-                        </div>
                     </td>
                     <td>
                         <h2 class="document-title">REMITO</h2>
-                        <div class="document-details">
-                            <strong>Documento N°:</strong> <span contenteditable="true" style="font-size: 11pt; font-weight: bold;">0001-00094772</span><br>
-                            <strong>Fecha de Emisión:</strong> <span contenteditable="true">03 de Junio de 2026</span><br>
-                            <br>
-                            <strong>I.V.A.:</strong> <span contenteditable="true">Responsable Inscripto</span>
-                        </div>
+                        <div contenteditable="true"><strong>Documento N°:</strong> 0001-00094772</div>
                     </td>
                 </tr>
             </table>
-            
-            <div class="afip-style-bar">
-                DOCUMENTO NO VÁLIDO COMO FACTURA • TRÁNSITO NACIONAL DE MERCADERÍAS
-            </div>
         </div>
 
         <div class="tracking-banner">
-            <table class="tracking-table">
-                <tr>
-                    <td>
-                        <span style="font-size: 7.5pt; color: #cbd5e0; display: block; margin-bottom: 2px; font-weight: bold;">CÓDIGO DE SEGUIMIENTO EN LÍNEA</span>
-                        <div class="tracking-code-value" contenteditable="true">ACC-94772</div>
-                    </td>
-                    <td class="tracking-route">
-                        <span style="font-size: 7.5pt; color: #cbd5e0; display: block; margin-bottom: 2px; font-weight: normal;">HOJA DE RUTA</span>
-                        <span contenteditable="true">XBG1 &gt; SET1 &gt; A2</span>
-                    </td>
-                </tr>
-            </table>
+            <div class="tracking-code-value" contenteditable="true">CÓDIGO: ACC-94772</div>
         </div>
-
-        <table class="info-grid">
-            <tr>
-                <td class="info-block">
-                    <div class="info-block-title">Origen de Carga / Despacho</div>
-                    <div class="info-row"><span class="info-label">Planta:</span><span class="info-value" contenteditable="true">Centro Logístico XBG1</span></div>
-                    <div class="info-row"><span class="info-label">Dirección:</span><span class="info-value" contenteditable="true">Parque Industrial</span></div>
-                    <div class="info-row"><span class="info-label">Provincia:</span><span class="info-value" contenteditable="true">Buenos Aires</span></div>
-                </td>
-                <td class="info-block">
-                    <div class="info-block-title">Destinatario / Comprobante de Recepción</div>
-                    <div class="info-row"><span class="info-label">Razón Social:</span><span class="info-value" contenteditable="true">Marcelo Rodríguez</span></div>
-                    <div class="info-row"><span class="info-label">DNI / CUIT:</span><span class="info-value" contenteditable="true">24.111.748</span></div>
-                    <div class="info-row"><span class="info-label">Cond. IVA:</span><span class="info-value" contenteditable="true">Consumidor Final</span></div>
-                </td>
-            </tr>
-        </table>
 
         <table class="items-table">
             <thead>
-                <tr>
-                    <th style="text-align: center; width: 20%;">Código de Barra / SKU</th>
-                    <th style="text-align: left; width: 45%;">Descripción de la Mercancía / Concepto</th>
-                    <th style="text-align: center; width: 20%;">Cantidad / Unidad</th>
-                    <th style="text-align: center; width: 15%;">Lote ID</th>
-                </tr>
+                <tr><th>Código</th><th>Descripción</th><th>Cantidad</th></tr>
             </thead>
             <tbody>
                 <tr>
-                    <td style="text-align: center; font-family: monospace; font-weight: bold;" contenteditable="true">84377594200009</td>
-                    <td>
-                        <strong contenteditable="true">Mercancía Liviana de Distribución Nacional</strong><br>
-                        <span style="font-size: 8.5pt; color:#4a5568;" contenteditable="true">Control de Unidad Operativa N° 13</span>
-                    </td>
-                    <td style="text-align: center; font-weight: bold;" contenteditable="true">LOTE - 200 Unidades</td>
-                    <td style="text-align: center; font-weight: bold;" contenteditable="true">13</td>
+                    <td contenteditable="true">84377594200009</td>
+                    <td contenteditable="true">Mercancía Liviana de Distribución</td>
+                    <td contenteditable="true">200 Unidades</td>
                 </tr>
             </tbody>
         </table>
 
         <div class="signatures-container">
             <div class="signature-block">
-                <div style="text-align: center; font-weight: bold; font-size: 9pt; color: #1a202c;">FIRMA DEL TRANSPORTISTA</div>
-                
+                <strong>FIRMA DEL TRANSPORTISTA</strong>
                 <div class="signature-canvas-wrapper" id="firmaWrapper">
-                    <input type="file" id="firmaInput" accept="image/png, image/jpeg" style="font-size: 8pt; width: 80%;" onchange="cargarFirma(event)">
-                    <img id="firmaTransportistaImg" src="" style="max-width: 100%; max-height: 100%; display: none;" alt="Firma Transportista" />
+                    <input type="file" id="firmaInput" accept="image/*" onchange="cargarFirma(event)">
+                    <img id="firmaTransportistaImg" style="max-width: 100%; max-height: 100%; display: none;" />
                 </div>
-                
-                <div class="signature-line"></div>
                 <button class="btn-clear-sig" id="btnBorrarFirma" onclick="borrarFirmaImg()" style="display:none;">Quitar Firma</button>
-                <div style="font-size: 8pt; color: #718096; text-align: center; font-weight: bold;" contenteditable="true">PANROD LOGÍSTICA S.A.</div>
-                <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Chofer asignado / Transportista</div>
             </div>
-            
             <div class="signature-block" style="float: right;">
-                <div style="text-align: center; font-weight: bold; font-size: 9pt; color: #1a202c;">RECEPCIÓN CONFORME CLIENTE</div>
-                <div style="height: 80px; margin-top: 15px;"></div> <div class="signature-line"></div>
-                <div style="font-size: 8pt; color: #718096; text-align: center; font-weight: bold;">CONFORMIDAD DE ENTREGA</div>
-                <div style="font-size: 7.5pt; color: #a0aec0; text-align: center;">Firma, Aclaración y DNI / Sello del Receptor</div>
+                <strong>RECEPCIÓN CONFORME CLIENTE</strong>
+                <div style="height: 80px; margin-top: 15px; border-bottom: 1px dashed #718096;"></div>
             </div>
-            <div style="clear: both;"></div>
         </div>
-
-        <div class="legal-footer">
-            SISTEMA DE DISTRIBUCION INTEGRAL • REGISTRO DE TRÁNSITO INTERNO • DOCUMENTO DE CONTROL OPERATIVO
-        </div>
-
     </div>
 
     <script>
-        // --- LÓGICA DE IMAGEN DE FIRMA ---
         function cargarFirma(event) {
             const file = event.target.files[0];
             if (file) {
@@ -302,94 +103,39 @@
                     const img = document.getElementById('firmaTransportistaImg');
                     img.src = e.target.result;
                     img.style.display = 'block';
-                    
                     document.getElementById('firmaInput').style.display = 'none';
                     document.getElementById('btnBorrarFirma').style.display = 'inline-block';
-                    document.getElementById('firmaWrapper').style.border = 'none';
                 }
                 reader.readAsDataURL(file);
             }
         }
 
         function borrarFirmaImg() {
-            const img = document.getElementById('firmaTransportistaImg');
-            img.src = '';
-            img.style.display = 'none';
-            
-            const input = document.getElementById('firmaInput');
-            input.value = '';
-            input.style.display = 'block';
-            
+            document.getElementById('firmaTransportistaImg').style.display = 'none';
+            document.getElementById('firmaInput').style.display = 'block';
             document.getElementById('btnBorrarFirma').style.display = 'none';
-            document.getElementById('firmaWrapper').style.border = '1px dashed #cbd5e0';
         }
 
-        // --- LÓGICA DE EXPORTACIÓN Y CONTROLES ---
-        function alternarPanel(visible) {
-            const panel = document.getElementById('actionPanel');
-            const trigger = document.getElementById('showTrigger');
-            if (visible) {
-                panel.style.display = 'flex';
-                trigger.style.display = 'none';
-            } else {
-                panel.style.display = 'none';
-                trigger.style.display = 'block';
-            }
-        }
-
-        function ocultarElementosPreExportacion() {
-            const panel = document.getElementById('actionPanel');
-            const trigger = document.getElementById('showTrigger');
-            const btnClear = document.getElementById('btnBorrarFirma');
-            const firmaInput = document.getElementById('firmaInput');
-            
-            const estadosOriginales = {
-                panel: panel.style.display,
-                trigger: trigger.style.display,
-                btnClear: btnClear ? btnClear.style.display : 'none',
-                firmaInput: firmaInput ? firmaInput.style.display : 'block'
-            };
-            
-            panel.style.display = 'none';
-            trigger.style.display = 'none';
-            if(btnClear) btnClear.style.display = 'none';
-            if(firmaInput) firmaInput.style.display = 'none';
-            
-            return estadosOriginales;
-        }
-
-        function restaurarElementos(estados) {
-            const panel = document.getElementById('actionPanel');
-            const trigger = document.getElementById('showTrigger');
-            const btnClear = document.getElementById('btnBorrarFirma');
-            const firmaInput = document.getElementById('firmaInput');
-            
-            panel.style.display = estados.panel;
-            trigger.style.display = estados.trigger;
-            if(btnClear) btnClear.style.display = estados.btnClear;
-            if(firmaInput) firmaInput.style.display = estados.firmaInput;
-        }
-
-        // Descarga de PDF Directo (Sin ventana de impresión)
         function exportarPDF() {
-            if (document.activeElement) { document.activeElement.blur(); }
-            
-            const estadosOriginales = ocultarElementosPreExportacion();
-            const elemento = document.getElementById('remitoContainer');
-            
-            const opciones = {
-                margin:       5,
-                filename:     'Remito_Logistica.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
+            const panel = document.getElementById('actionPanel');
+            panel.style.display = 'none';
+            const element = document.getElementById('remitoContainer');
+            html2pdf().from(element).save('Remito_PANROD.pdf').then(() => {
+                panel.style.display = 'flex';
+            });
+        }
 
-            // Generar y guardar el PDF, y al finalizar restaurar los botones
-            html2pdf().set(opciones).from(elemento).save().then(() => {
-                restaurarElementos(estadosOriginales);
-            }).catch(err => {
-                console.error("Error al exportar el PDF: ", err);
-                alert("Hubo un problema al generar el PDF. Inténtelo nuevamente.");
-                restaurarElementos(estadosOriginales);
-        
+        function exportarImagen() {
+            const panel = document.getElementById('actionPanel');
+            panel.style.display = 'none';
+            html2canvas(document.getElementById('remitoContainer')).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'Remito_PANROD.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                panel.style.display = 'flex';
+            });
+        }
+    </script>
+</body>
+</html>
