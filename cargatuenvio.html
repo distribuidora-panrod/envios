@@ -9,18 +9,66 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
+:root {
+    --bg-body: #f0f4f8;
+    --bg-card: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #475569;
+    --border-color: #cbd5e1;
+    --bg-input: #f8fafc;
+    --bg-system: #f8fafc;
+    --border-system: #cbd5e1;
+    --text-system: #0f172a;
+}
+
+[data-theme="dark"] {
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --bg-input: #0f172a;
+    --bg-system: #0f172a;
+    --border-system: #475569;
+    --text-system: #f8fafc;
+}
+
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
 font-family:'Poppins', sans-serif;
+transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 body{
-background:#f0f4f8;
-color:#1e293b;
+background: var(--bg-body);
+color: var(--text-main);
 overflow-x: hidden;
 position: relative;
+}
+
+/* 🌓 BOTÓN DARK MODE FLOTANTE */
+.theme-toggle-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+.theme-toggle-btn:hover {
+    transform: scale(1.05);
 }
 
 /* 🏆 CINTA DE LA SELECCIÓN ARGENTINA CON 3 ESTRELLAS */
@@ -122,15 +170,15 @@ z-index: 10;
 }
 
 .order-form-card {
-background: white;
+background: var(--bg-card);
 padding: 40px;
 border-radius: 24px;
 box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08);
-border: 1px solid #eaf2f9;
+border: 1px solid var(--border-color);
 }
 
 .form-section-title {
-color: #0f172a;
+color: var(--text-main);
 font-size: 18px;
 font-weight: 700;
 margin-bottom: 20px;
@@ -143,10 +191,10 @@ letter-spacing: 0.5px;
 
 /* CAMPOS DE SISTEMA AUTO-GENERADOS */
 .system-row {
-background: #f8fafc;
+background: var(--bg-system);
 padding: 18px;
 border-radius: 16px;
-border: 2px solid #cbd5e1;
+border: 2px dashed var(--border-system);
 margin-bottom: 35px;
 display: flex;
 align-items: center;
@@ -157,7 +205,7 @@ box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
 .system-row label {
 font-size: 13px;
 font-weight: 700;
-color: #1e293b;
+color: var(--text-main);
 text-transform: uppercase;
 letter-spacing: 1px;
 }
@@ -204,25 +252,24 @@ grid-column: span 2;
 .form-group label {
 font-size: 13px;
 font-weight: 600;
-color: #475569;
+color: var(--text-muted);
 text-transform: uppercase;
 letter-spacing: 0.5px;
 }
 
 .form-group input, .form-group select, .form-group textarea {
 padding: 14px 20px;
-border: 1px solid #cbd5e1;
+border: 1px solid var(--border-color);
 border-radius: 12px;
 font-size: 14px;
-color: #0f172a;
-background: #f8fafc;
+color: var(--text-main);
+background: var(--bg-input);
 outline: none;
-transition: all 0.3s ease;
 }
 
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
 border-color: #0284c7;
-background: white;
+background: var(--bg-card);
 box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1);
 }
 
@@ -241,6 +288,11 @@ margin-bottom: 30px;
 text-align: center;
 }
 
+[data-theme="dark"] .live-quote-box {
+    background: #14532d;
+    border-color: #166534;
+}
+
 .live-quote-box h4 {
 font-family: 'Montserrat', sans-serif;
 color: #166534;
@@ -250,6 +302,10 @@ letter-spacing: 1px;
 margin-bottom: 10px;
 }
 
+[data-theme="dark"] .live-quote-box h4 {
+    color: #4ade80;
+}
+
 .live-quote-box .price {
 font-size: 32px;
 font-weight: 800;
@@ -257,11 +313,19 @@ color: #15803d;
 font-family: 'Montserrat', sans-serif;
 }
 
+[data-theme="dark"] .live-quote-box .price {
+    color: #22c55e;
+}
+
 .live-quote-box .breakdown {
 font-size: 12px;
 color: #166534;
 margin-top: 5px;
 font-weight: 500;
+}
+
+[data-theme="dark"] .live-quote-box .breakdown {
+    color: #86efac;
 }
 
 /* BOTONES */
@@ -278,7 +342,6 @@ font-family: 'Montserrat', sans-serif;
 text-transform: uppercase;
 letter-spacing: 1px;
 width: 100%;
-transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
 box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
 }
 
@@ -290,14 +353,14 @@ box-shadow: 0 6px 20px rgba(2, 132, 199, 0.4);
 
 .legal-notice {
 font-size: 11px;
-color: #64748b;
+color: var(--text-muted);
 margin-top: 20px;
 text-align: justify;
 line-height: 1.5;
-background: rgba(248, 250, 252, 0.8);
+background: var(--bg-input);
 padding: 15px;
 border-radius: 12px;
-border: 1px solid #e2e8f0;
+border: 1px solid var(--border-color);
 }
 
 .security-badges{
@@ -309,13 +372,13 @@ margin-top:25px;
 }
 
 .badge-item{
-background:#f8fafc;
+background: var(--bg-input);
 padding:10px 18px;
 border-radius:30px;
-border:1px solid #e2e8f0;
+border:1px solid var(--border-color);
 font-size:12px;
 font-weight:600;
-color:#475569;
+color: var(--text-muted);
 }
 
 /* SECCIÓN DIVIDER */
@@ -374,19 +437,20 @@ z-index:999;
 }
 
 .modal-content{
-background:white;
+background: var(--bg-card);
 width:90%;
 max-width:400px;
 border-radius: 24px;
 padding:35px;
 text-align:center;
 box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+border: 1px solid var(--border-color);
 }
 
 .loader-eficiente {
   width: 50px;
   height: 50px;
-  border: 5px solid #e2e8f0;
+  border: 5px solid var(--border-color);
   border-radius: 50%;
   border-right-color: #0284c7; 
   animation: spinEficiente 0.8s linear infinite;
@@ -407,10 +471,14 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
     .form-grid { grid-template-columns: 1fr; gap: 15px; }
     .form-group.span-2 { grid-column: span 1; }
     .dimensions-grid { grid-template-columns: 1fr; gap: 10px; }
+    .theme-toggle-btn { top: inherit; bottom: 20px; left: 20px; }
 }
 </style>
 </head>
 <body>
+
+<!-- 🌓 BOTÓN INTERACTIVO DARK MODE -->
+<button type="button" class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">Modo Oscuro</button>
 
 <div class="afa-ribbon">
     <div class="afa-ribbon-content">
@@ -530,7 +598,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
                     </div>
                 </div>
 
-                <!-- NUEVOS AJUSTES LOGÍSTICOS ADICIONALES -->
+                <!-- CONFIGURACIONES OPERATIVAS -->
                 <div class="form-group">
                     <label for="op_prioridad">Prioridad / Tipo de Servicio</label>
                     <select id="op_prioridad" required>
@@ -555,7 +623,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="op_notas">Observaciones Especiales domiciliarias</label>
+                    <label for="op_notas">Observaciones Especiales Domiciliarias</label>
                     <input type="text" id="op_notas" placeholder="Ej: Tocar timbre 2B o dejar en recepción">
                 </div>
             </div>
@@ -565,7 +633,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
                 <h4>Tasas Integrales de Envío y Seguro de Tránsito</h4>
                 <div class="price" id="tasa_calculada">$0</div>
                 <div class="breakdown" id="desglose_calculado">Envío Base: $0 | Seguro Operativo (3%): $0</div>
-                <p style="font-size: 11px; color: #166534; margin-top: 8px;">*Cálculo automatizado sujeto a revisión técnica de acopio.</p>
+                <p style="font-size: 11px; color: #166534; margin-top: 8px;" id="legal_quote_text">*Cálculo automatizado sujeto a revisión técnica de acopio.</p>
             </div>
 
             <!-- BOTÓN DE ACCIÓN ACCIONABLE -->
@@ -586,7 +654,7 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
 
 <div class="section-divider">
     <div class="separator-line"></div>
-    <span>Sistemas PANROD Conectados</span>
+    <span>Sisttemas PANROD Conectados</span>
 </div>
 
 <footer>
@@ -600,12 +668,27 @@ box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
 <div class="modal" id="loadingModal">
     <div class="modal-content">
         <div class="loader-eficiente"></div>
-        <h3 style="color:#0f172a; margin-bottom:10px;">Procesando Solicitud...</h3>
-        <p style="font-size:13px; color:#64748b;">Consolidando datos en la red troncal de distribución federal.</p>
+        <h3 style="color: var(--text-main); margin-bottom:10px;">Procesando Solicitud...</h3>
+        <p style="font-size:13px; color: var(--text-muted);">Consolidando datos en la red troncal de distribución federal.</p>
     </div>
 </div>
 
 <script>
+// Lógica Alternadora del Dark Mode
+function toggleTheme() {
+    const body = document.body;
+    const currentTheme = body.getAttribute("data-theme");
+    const btn = document.getElementById("themeBtn");
+    
+    if (currentTheme === "dark") {
+        body.removeAttribute("data-theme");
+        btn.innerText = "Modo Oscuro";
+    } else {
+        body.setAttribute("data-theme", "dark");
+        btn.innerText = "Modo Claro";
+    }
+}
+
 // Matriz indexada con los costos provistos
 const matrizTarifas = {
     "chica": { regional: 21800, nacional: 30200 },
@@ -644,22 +727,26 @@ function procesarFormulario(event) {
     setTimeout(() => {
         const trackingCode = document.getElementById("tracking_id").value;
         const remitente = document.getElementById("remitente_nombre").value;
+        const telefonoRemitente = document.getElementById("remitente_telefono").value;
+        const depositoOrigen = document.getElementById("origen_provincia").value;
+        
         const receptor = document.getElementById("destino_nombre").value;
         const dni = document.getElementById("destino_dni").value;
         const direccion = document.getElementById("destino_direccion").value;
         const localidad = document.getElementById("destino_localidad").value;
         const cp = document.getElementById("destino_cp").value;
-        const mercaderia = document.getElementById("carga_detalle").value;
+        const provinciaSelect = document.getElementById("destino_provincia");
+        const provinciaTexto = provinciaSelect.options[provinciaSelect.selectedIndex].text;
         
+        const mercaderia = document.getElementById("carga_detalle").value;
         const alto = document.getElementById("carga_alto").value;
         const ancho = document.getElementById("carga_ancho").value;
         const largo = document.getElementById("carga_largo").value;
         
-        // Captura de campos adicionales
         const prioridad = document.getElementById("op_prioridad").value;
         const pago = document.getElementById("op_pago").value;
         const horario = document.getElementById("op_horario").value;
-        const notas = document.getElementById("op_notes") ? document.getElementById("op_notes").value : document.getElementById("op_notas").value;
+        const notas = document.getElementById("op_notas").value;
 
         let valorLimpio = document.getElementById("carga_valor").value.replace(/[^0-9]/g, '');
         const valorDeclarado = parseInt(valorLimpio) || 0;
@@ -667,6 +754,7 @@ function procesarFormulario(event) {
         const tasaTotal = document.getElementById("tasa_calculada").innerText;
         const desglose = document.getElementById("desglose_calculado").innerText;
 
+        // Construcción de la plantilla estructurada detallada para WhatsApp
         const mensajeWhatsApp = `Hola PANROD LOGÍSTICA.
 
 Solicito el despacho de una nueva orden con tracking pre-asignado.
@@ -674,36 +762,41 @@ Solicito el despacho de una nueva orden con tracking pre-asignado.
 🆔 CÓDIGO DE SEGUIMIENTO: ${trackingCode}
 
 📦 DETALLES DE ORIGEN:
-Remitente: ${remitente}
+• Remitente: ${remitente}
+• Teléfono: ${telefonoRemitente}
+• Depósito de Despacho: ${depositoOrigen}
 
 🚚 DETALLES DE DESTINO:
-Destinatario: ${receptor} (DNI: ${dni})
-Dirección: ${direccion}
-Localidad: ${localidad} (CP: ${cp})
+• Destinatario: ${receptor} (DNI: ${dni})
+• Dirección: ${direccion}
+• Localidad: ${localidad} (CP: ${cp})
+• Provincia: ${provinciaTexto}
 
 🛍️ INFORMACIÓN DE PRODUCTO / CARGA:
-Contenido: ${mercaderia}
-Dimensiones: ${alto}cm x ${ancho}cm x ${largo}cm
-Valor Declarado: $ ${valorDeclarado.toLocaleString("es-AR")}
+• Contenido: ${mercaderia}
+• Dimensiones: ${alto}cm x ${ancho}cm x ${largo}cm
+• Valor Declarado: $ ${valorDeclarado.toLocaleString("es-AR")}
 
 ⚙️ CONFIGURACIÓN LOGÍSTICA:
-Servicio: ${prioridad}
-Método de Pago: ${pago}
-Horario de Entrega: ${horario}
-Observaciones: ${notas ? notas : 'Ninguna'}
+• Tipo de Servicio: ${prioridad}
+• Método de Pago: ${pago}
+• Horario de Entrega: ${horario}
+• Observaciones: ${notas ? notas : 'Ninguna'}
 
-💰 RENDICIÓN DE TASAS:
-Tasas Logísticas Calculadas: ${tasaTotal}
-(${desglose})
+💰 LIQUIDACIÓN DE TASAS LOGÍSTICAS:
+• PRECIO TOTAL NETO: ${tasaTotal}
+• Detalles: ${desglose}
 
-Quedo a la espera de la validación física en planta y los datos de la cuenta central para la activación definitiva de la guía.`;
+Quedo a la espera de la validación física en planta y los datos de la cuenta de acreditación central para la activación definitiva de la guía.`;
 
         document.getElementById("loadingModal").style.display = "none";
-        const urlDestino = 'https://wa.me/5492213109897?text=' + encodeURIComponent(mensajeWhatsApp);
+        
+        // Redirección directa al nuevo número solicitado
+        const urlDestino = 'https://wa.me/5491131803790?text=' + encodeURIComponent(mensajeWhatsApp);
         window.open(urlDestino, '_blank');
 
     }, 1500);
 }
 </script>
 </body>
-</html>
+                                                         </html>
