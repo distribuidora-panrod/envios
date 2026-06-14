@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editor de Etiquetas Térmicas PANROD</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
     <style>
         * {
             box-sizing: border-box;
@@ -39,7 +41,6 @@
             margin-bottom: 20px;
         }
         
-        /* Sistema de grilla para el formulario */
         .form-row {
             display: flex;
             gap: 15px;
@@ -52,7 +53,6 @@
         .form-row .form-group {
             margin-bottom: 0;
         }
-
         .form-group label {
             display: block;
             font-weight: 600;
@@ -74,22 +74,29 @@
             outline: none;
             border-color: #3b82f6;
         }
-        .btn-download {
-            background-color: #0f172a;
+
+        /* Botones de Descarga */
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .btn {
+            flex: 1;
             color: white;
             border: none;
-            padding: 16px;
-            width: 100%;
+            padding: 14px;
             border-radius: 8px;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 10px;
             transition: background 0.2s;
+            text-align: center;
         }
-        .btn-download:hover {
-            background-color: #1e293b;
-        }
+        .btn-png { background-color: #334155; }
+        .btn-png:hover { background-color: #1e293b; }
+        .btn-pdf { background-color: #b91c1c; }
+        .btn-pdf:hover { background-color: #991b1b; }
 
         /* Contenedor de la Vista Previa */
         .preview-container {
@@ -98,9 +105,10 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             border-radius: 4px;
             overflow: hidden;
+            background: white;
         }
         
-        /* DISEÑO DE ETIQUETA TÉRMICA VERTICAL (Estándar 10x15cm) */
+        /* DISEÑO DE ETIQUETA TÉRMICA (10x15cm exactos) */
         .label-ticket {
             width: 400px;
             height: 600px;
@@ -109,6 +117,7 @@
             color: black;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
         
         /* 1. Encabezado: Logo y Origen */
@@ -117,12 +126,12 @@
             justify-content: space-between;
             align-items: flex-start;
             border-bottom: 3px solid black;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
         }
         .logo-placeholder {
             max-width: 140px;
-            max-height: 50px;
+            max-height: 45px;
             object-fit: contain;
         }
         .company-details {
@@ -138,40 +147,42 @@
             margin-bottom: 2px;
         }
 
-        /* 2. Sección del Cliente y QR */
+        /* 2. Sección del Cliente y QR (CORREGIDA LA DEFORMACIÓN) */
         .client-section {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center; /* Alineación vertical centralizada */
             border-bottom: 2px solid black;
             padding-bottom: 15px;
             margin-bottom: 15px;
-            flex-grow: 1;
         }
         .client-info {
-            width: 70%;
+            width: 72%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px; /* Espaciado compacto entre líneas */
         }
         .client-title {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            margin-bottom: 5px;
             letter-spacing: 1px;
+            color: #333;
         }
         .client-name {
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 19px;
+            font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 8px;
             text-transform: uppercase;
+            margin-bottom: 2px;
         }
         .client-data {
-            font-size: 13px;
+            font-size: 14px;
             line-height: 1.4;
         }
         .qr-placeholder {
-            width: 90px;
-            height: 90px;
+            width: 85px;
+            height: 85px;
             object-fit: contain;
         }
 
@@ -181,8 +192,8 @@
             justify-content: space-between;
             align-items: stretch;
             border: 3px solid black;
-            margin-bottom: 5px;
-            height: 90px;
+            margin-bottom: 8px;
+            height: 85px;
         }
         .route-badge {
             background: black;
@@ -200,9 +211,9 @@
             align-items: center;
             justify-content: center;
             flex-grow: 1;
-            font-size: 55px;
+            font-size: 50px;
             font-weight: 900;
-            letter-spacing: -2px;
+            letter-spacing: -1px;
             line-height: 1;
         }
         .box-badge {
@@ -226,12 +237,12 @@
         /* 4. Sub-rutas y modo de despacho */
         .route-path {
             text-align: center;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 800;
             letter-spacing: 1px;
             padding: 8px 0;
             border-bottom: 2px dashed black;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .dispatch-mode {
             text-align: center;
@@ -239,26 +250,26 @@
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 15px;
         }
 
-        /* 5. Código de barras (Abajo de todo) */
+        /* 5. Código de barras (Empujado hacia abajo de forma limpia) */
         .barcode-container {
             text-align: center;
-            margin-top: auto; /* Empuja el código hacia abajo */
+            margin-top: auto; /* Esto empuja el código de barras al fondo sin estirar lo de arriba */
+            padding-top: 10px;
         }
         .barcode-render {
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            height: 80px;
+            height: 75px;
             width: 100%;
         }
         .barcode-bar { background-color: black; height: 100%; }
         .barcode-space { background-color: transparent; height: 100%; }
         
         .barcode-num {
-            font-size: 18px;
+            font-size: 16px;
             letter-spacing: 4px;
             margin-top: 5px;
             font-weight: 800;
@@ -269,7 +280,7 @@
 <body>
 
     <div class="editor-container">
-        <h2>Editor de Etiqueta (En Vivo)</h2>
+        <h2>Configuración de Etiqueta</h2>
         
         <div class="form-row">
             <div class="form-group">
@@ -300,7 +311,7 @@
                 <input type="text" id="txt-cliente-dni" value="94.404.743">
             </div>
             <div class="form-group">
-                <label>Pedido / Producto</label>
+                <label>Pedido / Lote</label>
                 <input type="text" id="txt-cliente-pedido" value="COMBO PLATINO">
             </div>
         </div>
@@ -345,7 +356,10 @@
             </div>
         </div>
 
-        <button class="btn-download" id="btn-capture">Generar Imagen (PNG)</button>
+        <div class="btn-group">
+            <button class="btn btn-png" id="btn-png">🖼️ Descargar PNG</button>
+            <button class="btn btn-pdf" id="btn-pdf">📄 Descargar PDF</button>
+        </div>
     </div>
 
     <div class="preview-container">
@@ -389,7 +403,10 @@
     </div>
 
     <script>
-        // Obtener todos los inputs
+        // Inicializar jsPDF
+        window.jsPDF = window.jspdf.jsPDF;
+
+        // Obtener inputs
         const inputs = {
             origen: document.getElementById('txt-origen'),
             nom: document.getElementById('txt-cliente-nombre'),
@@ -404,7 +421,7 @@
             barcode: document.getElementById('txt-barcode-num')
         };
 
-        // Obtener elementos visuales de la etiqueta
+        // Obtener labels visuales
         const labels = {
             origen: document.getElementById('lbl-origen'),
             nom: document.getElementById('lbl-nom'),
@@ -447,19 +464,17 @@
             patron.forEach(tipo => {
                 const elemento = document.createElement('div');
                 elemento.className = tipo === 1 ? 'barcode-bar' : 'barcode-space';
-                elemento.style.width = '2.5px'; // Barras un poco más anchas
+                elemento.style.width = '2.5px';
                 barcodeRender.appendChild(elemento);
             });
         }
 
-        // Función centralizada para actualizar toda la etiqueta
+        // Función para actualizar en vivo
         function actualizarEtiqueta() {
-            // Formatear el texto de origen para poner negrita en la primera línea
             let lineas = inputs.origen.value.split('\n');
             if(lineas.length > 0) { lineas[0] = `<div class="company-title">${lineas[0]}</div>`; }
             labels.origen.innerHTML = lineas.join('<br>');
             
-            // Asignación directa de textos
             labels.nom.textContent = inputs.nom.value;
             labels.dni.textContent = inputs.dni.value;
             labels.ped.textContent = inputs.ped.value;
@@ -474,7 +489,6 @@
             generarCodigoBarras(inputs.barcode.value);
         }
 
-        // Agregar listeners a todos los campos de texto
         Object.values(inputs).forEach(input => {
             input.addEventListener('input', actualizarEtiqueta);
         });
@@ -498,25 +512,47 @@
             }
         });
 
-        // Ejecutar al cargar la página
         actualizarEtiqueta();
 
-        // Botón de captura PNG
-        document.getElementById('btn-capture').addEventListener('click', function() {
+        // ----------------------------------------------------
+        // FUNCIONES DE DESCARGA (PNG y PDF)
+        // ----------------------------------------------------
+        
+        async function capturarEtiqueta() {
             const objetivo = document.getElementById('etiqueta-descargar');
-            
-            html2canvas(objetivo, {
-                scale: 3, // Alta calidad para impresión
+            return await html2canvas(objetivo, {
+                scale: 3, // Alta calidad
                 backgroundColor: "#ffffff",
                 useCORS: true
-            }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'etiqueta_termica_' + inputs.nom.value.replace(/\s+/g, '_') + '.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
             });
+        }
+
+        // Descargar como PNG
+        document.getElementById('btn-png').addEventListener('click', async function() {
+            const canvas = await capturarEtiqueta();
+            const link = document.createElement('a');
+            link.download = 'etiqueta_' + inputs.nom.value.replace(/\s+/g, '_') + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+
+        // Descargar como PDF (10x15 cm)
+        document.getElementById('btn-pdf').addEventListener('click', async function() {
+            const canvas = await capturarEtiqueta();
+            const imgData = canvas.toDataURL('image/png');
+            
+            // Crear PDF con dimensiones 100x150 mm (10x15 cm)
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: [100, 150]
+            });
+            
+            // Insertar imagen cubriendo todo el canvas
+            pdf.addImage(imgData, 'PNG', 0, 0, 100, 150);
+            pdf.save('etiqueta_' + inputs.nom.value.replace(/\s+/g, '_') + '.pdf');
         });
     </script>
 </body>
-            </html>
-                
+    </html>
+                    
